@@ -7,8 +7,10 @@
     <title>JavaScript Fundamentals – Part 1</title>
     <style>
       body {
+        overflow: hidden;
         height: 100vh;
         display: flex;
+        flex-direction: column;
         align-items: center;
         background: linear-gradient(to top left, #28b487, #7dd56f);
       }
@@ -21,19 +23,25 @@
         text-align: center;
         color: white;
       }
+      div a:link,
+      div a:visited {
+        display: inline-block;
+        font-size: 44px;
+        padding: 12px;
+        color: black;
+      }
     </style>
   </head>
   <body>
-    <h1>
-      JavaScript Fundamentals &mdash; Part 1
-
+    <h1>JavaScript Fundamentals &mdash; Part 1</h1>
+    <div>
       <a href="../Fundamentals-Part-1/Assignments/practice-ass.html"
         >Assignments Tab</a
       >
       <a href="../Fundamentals-Part-1/Challenges/challenge.html"
         >Challenges Tab</a
       >
-    </h1>
+    </div>
 
     <script src="./script.js"></script>
   </body>
