@@ -125,25 +125,25 @@ if (age === 18) {
   console.log("I'm Legal");
 }
 if ("18" == 18) {
-  // this does coercion, avoid this during comparison
+  // this does coercion, avoid this during comparison==> always use strict to prevent bugs
   console.log(true);
 }
 
 // const favorite = prompt("What's your favorite number?");
 // const favorite = Number(prompt("What's your favorite number?"));
-console.log(favorite, typeof favorite);
+// console.log(favorite, typeof favorite);
 
-if (favorite === 22) {
-  console.log("Cool! 22 is an amazing number");
-} else if (favorite === 25) {
-  console.log("Cool! 25 is an amazing number");
-} else {
-  console.log("Cool! The Number isn't 22 or 25 though");
-}
+// if (favorite === 22) {
+//   console.log("Cool! 22 is an amazing number");
+// } else if (favorite === 25) {
+//   console.log("Cool! 25 is an amazing number");
+// } else {
+//   console.log("Cool! The Number isn't 22 or 25 though");
+// }
 
-if (favorite !== 9) {
-  console.log("Why not 23");
-}
+// if (favorite !== 9) {
+//   console.log("Why not 23");
+// }
 
 ////////////////////////// Boolean Logic /////////////////////////////////
 
@@ -165,3 +165,96 @@ if (favorite !== 9) {
 // A OR B =TRUE
 // !A AND B = TRUE
 // A AND !B =FALSE
+
+const hasDriversLicense = true;
+const hasGoodVision = true;
+console.log(hasDriversLicense && hasGoodVision);
+console.log(hasDriversLicense || hasGoodVision);
+console.log(!hasDriversLicense);
+
+const shouldDrive = hasDriversLicense && hasGoodVision;
+if (shouldDrive) {
+  console.log("Sarah is able to drive!");
+} else {
+  console.log("Someone else should drive");
+}
+
+const isTired = true;
+console.log(hasDriversLicense || hasGoodVision || isTired);
+
+if (hasDriversLicense && hasGoodVision && !isTired) {
+  console.log("Sarah is able to drive!");
+} else {
+  console.log("Someone else should drive");
+}
+
+////////////////////////// The Switch Statement /////////////////////////////////
+
+let day = "monday";
+switch (day) {
+  case "monday": // day === "monday"
+    console.log("Plan course Structure");
+    console.log("Go to coding meetup");
+    break;
+  case "tuesday":
+    console.log("Prepare theory videos");
+    break;
+  case "wednesday":
+  case "thursday":
+    console.log("Write code examples");
+    break;
+  case "friday":
+    console.log("Record videos");
+    break;
+  case "saturday":
+  case "sunday":
+    console.log("Enjoy the weekend");
+  default:
+    console.log("Not a valid day");
+  // break;
+}
+
+day = "friday";
+
+if (day === "monday") {
+  console.log("Plan course Structure");
+  console.log("Go to coding meetup");
+} else if (day === "tuesday") {
+  console.log("Prepare theory videos");
+} else if (day === "wednesday" || day === "thursday") {
+  console.log("Write code examples");
+} else if (day === "friday") {
+  console.log("Record videos");
+} else if (day === "saturday" || day === "sunday") {
+  console.log("Enjoy the weekend");
+} else {
+  console.log("Not a valid day");
+}
+
+////////////////////////// Statements and Expressions /////////////////////////////////
+
+// Expressions- a piece of code that produces a value ==> 3 + 4, 1991, true && false & !false
+// Statements are like full sentences that translate our actions
+if (23 > 10) {
+  const str = "23 is bigger"; // this is an expression
+} // this is a statement
+
+// note: in template literals you can only write expressions not statements
+
+////////////////////////// The Conditional Operator- Ternary Operator /////////////////////////////////
+const agePam = 15;
+agePam >= 18
+  ? console.log("I like to drink wine")
+  : console.log("I have to drink water");
+
+const drink = agePam >= 18 ? "wine" : "water";
+console.log(drink);
+
+// instead of
+let drink2; // remember that this has to be defined outside
+if (agePam >= 18) {
+  drink2 = "wine";
+} else {
+  drink2 = "water";
+}
+console.log(`I like to drink ${agePam >= 18 ? "wine" : "water"}`);
