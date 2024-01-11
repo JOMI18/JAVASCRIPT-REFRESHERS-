@@ -62,6 +62,7 @@ const [players1, players2] = game.players; // array destructuring
 console.log(players1, players2);
 
 // 2)
+// Whenever you hear 'remaining',  you can think of the rest syntax, ?
 const [gk, ...fieldPlayers] = players1; // rest [pattern in destructuring]
 console.log(gk, fieldPlayers);
 
@@ -85,14 +86,20 @@ console.log(team1, draw, team2);
 
 // 6)
 const printGoals = function (...players) {
+  //rest
   console.log(...players);
+  for (let i = 0; i < players.length; i++) {
+    console.log(`${players[i]}`);
+  }
   console.log(`${players.length} goals were scored`);
 };
 
 printGoals('Davies', 'Muller', 'Lewandowski', 'Kimmich');
 printGoals('Davies', 'Muller');
-printGoals(...game.scored);
+printGoals(...game.scored); //spread
 
 // 7)
 team1 < team2 && console.log('Team 1 is more likely to win');
 team1 > team2 && console.log('Team 2 is more likely to win');
+
+// So, basically, we want this here to be evaluated when the result of this operation is true. And which is the logical operator that continues operation when the first value is true? Well, it's the and operator, right? The 'or' operator short circuits when the first value is true. This is not what we want, because then right now it would short circuit and this would not be evaluated. But in this case, when this is true, we actually want the evaluation to continue.
