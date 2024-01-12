@@ -5,6 +5,19 @@ const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 
 // Data needed for first part of the section
+const weekDays = ['mon', 'tue', 'wed', 'thur', 'fri', 'sat', 'sun'];
+const menuHours = {
+  sun: {
+    open: 12,
+    close: 22,
+  },
+  mon: { open: 11, close: 23 },
+  tue: {
+    open: 0, // Open 24 hours
+    close: 24,
+  },
+};
+
 const restaurant = {
   name: 'Classico Italiano',
   location: 'Via Angelo Tavanti 23, Firenze, Italy',
@@ -59,6 +72,59 @@ const restaurant = {
   },
   orderPizza: function (mainIngredients, ...otherIngredients) {
     console.log(mainIngredients, otherIngredients);
+  },
+
+  //  ES6 Enhanced Object Literals
+  // 1.
+  // B :
+  // menuHours:menuHours
+
+  // A :
+  menuHours, //with exactly that variable name. Otherwise, JavaScript will not know what this variable is.
+
+  // 2.
+  // B :
+  // menuOrder: function (StarterIndex, mainIndex) {
+  //   return [this.starterMenu[StarterIndex], this.mainMenu[mainIndex]];
+  // },
+
+  // A :
+  menuOrder(StarterIndex, mainIndex) {
+    return [this.starterMenu[StarterIndex], this.mainMenu[mainIndex]];
+  },
+
+  // 3.
+  // B :
+
+  // openingHours: {
+  //   thu: {
+  //     open: 12,
+  //     close: 22,
+  //   },
+  //   fri: {
+  //     open: 11,
+  //     close: 23,
+  //   },
+  //   sat: {
+  //     open: 0, // Open 24 hours
+  //     close: 24,
+  //   },
+  // },
+
+  // A :
+  opening: {
+    [weekDays[0]]: {
+      open: 12,
+      close: 22,
+    },
+    fri: {
+      open: 11,
+      close: 23,
+    },
+    [`day-${1 + 3}`]: {
+      open: 0, // Open 24 hours
+      close: 24,
+    },
   },
 };
 
@@ -358,3 +424,40 @@ console.log(rest1);
 console.log(rest2);
 
 // And so again, if you ever need to assign a value to a variable that is already defined, so that has a value that is currently truthy, then you can use this and assignment operator.
+
+////////////////////// Looping Arrays ////////////////////////////
+
+//////////// The for-of Loop ////////////
+// you can also use the continue and break key words here too... but not in the other after this
+const wholeMenu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+for (const item of wholeMenu) {
+  console.log(item);
+}
+
+// to get the current index
+for (const item of wholeMenu.entries()) {
+  console.log(item);
+}
+
+// console.log([...wholeMenu.entries()]);
+
+for (const item of wholeMenu.entries()) {
+  console.log(`${item[0] + 1}: ${item[1]}`);
+} // but we are actually at this point smarter than doing it like this. And that's because if item is now an array, we can de-structure it. We don't have to manually take element zero and element one,
+
+for (const [i, el] of wholeMenu.entries()) {
+  console.log(`Menu Order ${i + 1}: ${el}`);
+}
+
+////////////////////////  Enhanced Object Literals ////////////////////////
+
+// check the restaurant object
+console.log(restaurant);
+
+// So the second enhancement to object literals  is about writing methods.
+
+// And finally, the third enhancement is  that we can now actually compute property names instead  of having to write them out manually and literally.  And compute just means like calculate  and so l
+
+console.log(restaurant.opening);
+
+//////////////////////// Optional Chaining (?.) ////////////////////////
