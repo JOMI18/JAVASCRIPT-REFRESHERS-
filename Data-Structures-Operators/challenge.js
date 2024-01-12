@@ -103,3 +103,76 @@ team1 < team2 && console.log('Team 1 is more likely to win');
 team1 > team2 && console.log('Team 2 is more likely to win');
 
 // So, basically, we want this here to be evaluated when the result of this operation is true. And which is the logical operator that continues operation when the first value is true? Well, it's the and operator, right? The 'or' operator short circuits when the first value is true. This is not what we want, because then right now it would short circuit and this would not be evaluated. But in this case, when this is true, we actually want the evaluation to continue.
+
+///////////////////////////////////////// Coding Challenge #2 ////////////////////////////////////
+
+/* 
+Let's continue with our football betting app!
+
+1. Loop over the game.scored array and print each player name to the console, along with the goal number (Example: "Goal 1: Lewandowski")
+2. Use a loop to calculate the average odd and log it to the console (We already studied how to calculate averages, you can go check if you don't remember)
+3. Print the 3 odds to the console, but in a nice formatted way, exactly like this:
+      Odd of victory Bayern Munich: 1.33
+      Odd of draw: 3.25
+      Odd of victory Borrussia Dortmund: 6.5
+Get the team names directly from the game object, don't hardcode them (except for "draw"). HINT: Note how the odds and the game objects have the same property names 😉
+
+BONUS: Create an object called 'scorers' which contains the names of the players who scored as properties, and the number of goals as the value. In this game, it will look like this:
+      {
+        Gnarby: 1,
+        Hummels: 1,
+        Lewandowski: 2
+      }
+
+GOOD LUCK 😀
+*/
+
+// 1.Using entries gives you full access to the entire array {index, value}
+
+for (const goal of game.scored.entries()) {
+  // console.log(goal);
+  console.log(`Goal ${goal[0] + 1} was scored by ${goal[1]} `);
+}
+
+// A better option would be destructuring, so it can be used directly without unnecessary complications
+for (const [i, player] of game.scored.entries())
+  console.log(`Goal ${i + 1}: ${player}`);
+
+// 2.
+gameOdds = Object.entries(game.odds);
+// console.log(gameOdds);
+// avg=(team1 + team2) / 2;
+
+let avg = 0;
+for (const odd of gameOdds) {
+  console.log(odd);
+  avg += odd[1];
+}
+avg /= gameOdds.length;
+console.log(gameOdds.length);
+console.log(avg);
+
+//  A shorter way would be to get the values directly
+const odds = Object.values(game.odds);
+let average = 0;
+for (const odd of odds) average += odd;
+average /= odds.length;
+console.log(average);
+
+// 3;
+for (const [team, odd] of gameOdds) {
+  console.log(team, odd);
+  const teamStr = team === 'x' ? 'draw' : `victory, ${game[team]}`;
+  console.log(`Odd of ${teamStr}: ${odd}`);
+}
+
+// BONUS:
+// So the solution is to loop over the array, and add the array elements as object properties, and then increase the count as we encounter a new occurence of a certain element
+const scorers = {};
+for (const player of game.scored) {
+  // console.log(player);
+  scorers[player] ? scorers[player]++ : (scorers[player] = 1);
+  // console.log(scorers[player]);
+}
+
+console.log(scorers);
