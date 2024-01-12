@@ -461,3 +461,80 @@ console.log(restaurant);
 console.log(restaurant.opening);
 
 //////////////////////// Optional Chaining (?.) ////////////////////////
+// console.log(restaurant.openingHours.mon.open); // this wont work because monday is a property that doesn't exist --- as a result it reads undefined.open hours which would result in an error
+
+// a soln would be to use an if-else statement
+if (restaurant.openingHours && restaurant.openingHours.mon) {
+  // but in a real world example its not advised because it could further complicate your code
+  console.log(restaurant.openingHours.mon.open);
+}
+// a better fix would be to use the optional chaining
+console.log(restaurant.openingHours.mon?.open); // how this works is that if the values before the question mark aren't nullish {so null and undefined}... then it would process the variable after
+// but if it is, it would just return undefined
+
+console.log(restaurant.openingHours?.mon?.open);
+
+// Real World Example
+const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+for (const day of days) {
+  restaurant.openingHours.day; // you cant do this because its not an actual property of the object
+  restaurant.openingHours[day]; // And so remember if we want to use a variable name  as the property name,  basically, we need to use the brackets notation.
+  const openHours =
+    // restaurant.openingHours[day]?.open || '- the store remains closed'; // but on saturday when it opens at 0, it reads it as falsy-- a soln is to used the nullish coalescing operator
+    restaurant.openingHours[day]?.open ??
+    '-- Sorry, the store remains closed today';
+  console.log(`on ${day} we open at ${openHours} `);
+}
+
+// On Methods
+console.log(restaurant.order?.(2, 0) ?? "Method doesn't exist");
+console.log(restaurant.orderPrawn?.(2, 0) ?? "Method doesn't exist");
+
+// On Arrays
+const users = [{ name: 'Jonas', email: 'hello@jonas.io' }];
+// const users = [];
+
+console.log(users[0]?.name ?? 'User array empty'); // easier & less complicated than if-else
+// So, get used to this optional chaining operator,  which almost always,  we use them together with the nullish coalescing operator  so that we can actually do something  in case we don't get a result from the object  or from the array that's here on the left hand side.
+
+// if (users.length > 0) console.log(users[0].name);
+// else console.log('user array empty');
+
+/////////////////////// Looping Objects: Object Keys, Values, and Entries ///////////////////////
+
+// Property NAMES
+for (const day of Object.keys(openingHours)) {
+  console.log(day);
+}
+
+const properties = Object.keys(openingHours); // this is am array now
+console.log(properties);
+
+let openStr = `we are open ${properties.length} days a week:`;
+for (const day of properties) {
+  openStr += ` ${day},`;
+}
+
+console.log(openStr);
+
+// Property VALUES
+const values = Object.values(openingHours);
+console.log(values);
+for (const periods of values) {
+  console.log(periods);
+}
+
+// Entire object
+const entries = Object.entries(openingHours);
+// console.log(entries);
+
+for (const x of entries) {
+  console.log(x);
+}
+// for (const [key, values] of entries) { // values is an object so further destructure
+//   console.log(x);
+// }
+// [key, value] if it was a simpler structure
+for (const [day, { open, close }] of entries) {
+  console.log(`On ${day} we open at ${open} and close at ${close}`);
+}
