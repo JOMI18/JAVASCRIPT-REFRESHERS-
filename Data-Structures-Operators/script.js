@@ -538,3 +538,162 @@ for (const x of entries) {
 for (const [day, { open, close }] of entries) {
   console.log(`On ${day} we open at ${open} and close at ${close}`);
 }
+
+//////////////////////////// Sets ////////////////////////////////////
+// And a set is basically just a collection  of unique values.  So that means that a set can never have any duplicates.
+
+const ordersSet = new Set([
+  'Pasta',
+  'Pizza',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+console.log(ordersSet);
+
+console.log(new Set('Jonas'));
+console.log(new Set());
+
+console.log(ordersSet.size);
+// And then the size is how many different meals will be cooked? And just note, how it is actually called size and to not length like it is in arrays.
+
+console.log(ordersSet.has('Pizza'));
+console.log(ordersSet.has('Bread'));
+// this has method is similar to the includes method in arrays.
+
+ordersSet.add('Garlic Bread');
+ordersSet.add('Garlic Bread');
+console.log(ordersSet);
+ordersSet.delete('Risotto');
+console.log(ordersSet);
+// And in fact, there is no way  of getting values out of a set.  And if we think about this,  then it makes sense.  So there's really no need for getting data out  of a set. That's because if all values are unique,  and if their order does not matter,  then there is no point  of retrieving values out of a set.  All we need to know  is whether a certain value  is in the set or not.  And that's why we have the has method.
+
+// If your goal is to actually store values in order and then retrieve it, then the best use case, is to just use an array. You wouldn't use a set for that. And so again, there's no need for getting values out of a set, because if you need it, then you will just use an array.
+
+// ordersSet.clear();
+// All we can use it for is to basically delete all of the elements of the set.
+// console.log(ordersSet);
+
+// Sets are iterables... so we can loop over them
+for (const order of ordersSet) {
+  console.log(order);
+}
+// Example
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+// const staffUnique = [new Set(staff)]; // here its an OBJECT
+const staffUnique = [...new Set(staff)]; // we want it to be in an array, we can spread it because spread operator works on iterables
+console.log(staffUnique);
+
+console.log(
+  new Set(['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter']).size
+);
+
+console.log(new Set('jonasschmedtmann').size);
+// All right. So as a conclusion to this video sets are not intended to replace arrays at all. So whenever you need to store values in order, and that might contain duplicates, always just use arrays. That's also true when you need to really manipulate data, because arrays have access to a lot of great array methods that we're going to study a little bit later. Now sets have this very useful property of being unique. And it's also very easy to interact with sets by using all of their straightforward methods.
+
+//////////////////////////////////////  Maps: Fundamentals //////////////////////////////
+// a map is a data structure that we can use to map values to keys. So, just like an object data is stored in key value pairs in maps. Now, the big difference between objects and maps is that in maps, the keys can have any type and this can be huge. So, in objects, the keys are basically always strings. But in maps, we can have any type of key. It could even be objects, or arrays, or other maps.
+
+const rest = new Map();
+rest.set('name', 'Classico Italiano'); // set is adding it
+rest.set(1, 'Firenze, Italy');
+console.log(rest.set(2, 'Lisbon, Portugal')); // And, calling the set method like this  does not only update the map that it's called on,  but it also returns the map.
+
+// Now, the fact that the set method  actually returns the updated map  allows us to change the set method
+
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('open', 11)
+  .set('close', 23)
+  .set(true, 'We are open :D')
+  .set(false, 'We are closed :(');
+
+console.log(rest.get('name')); // get is to read data from a map
+console.log(rest.get(true)); // data types matter, if it was console.log(rest.get("true")) => it would be undefined
+console.log(rest.get(1));
+
+const time = 21;
+console.log(rest.get(time > rest.get('open') && time < rest.get('close'))); // this would return true or false=> (time > rest.get('open') && time < rest.get('close')
+
+console.log(rest.has('categories'));
+rest.delete(2);
+console.log(rest);
+// Now comparing this to objects,  we can actually also delete properties from objects  using something called the Delete Operator.  But, that's a really slow process.  And usually, it's not encouraged to do that here.
+
+// About the has method, objects do also have a method which is called hasOwnProperty.
+
+console.log(rest.size);
+// rest.clear();
+// console.log(rest);
+
+rest.set([1, 2], 'Test');
+console.log(rest.get([1, 2])); /// this isn't going to work because behind the scenes they are different objects in memory, instead
+const arys = [1, 2];
+rest.set(arys, 'Test');
+console.log(rest.get(arys));
+
+rest.set(document.querySelector('h1'), 'Heading');
+console.log(rest);
+
+////////////////////////////////  Maps: Iteration //////////////////////////////
+
+const question = new Map([
+  ['question', 'What is the best programming language in the world?'],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'JavaScript'],
+  ['correct', 3],
+  [true, 'Correct 🎉'],
+  [false, 'Try again!'],
+]); // better than using sets to add
+console.log(question);
+
+// Convert object to map
+console.log(Object.entries(openingHours));
+const hoursMap = new Map(Object.entries(openingHours)); // whenever you want a map and have an object
+console.log(hoursMap);
+
+// Quiz app
+console.log(question.get('question'));
+for (const [key, value] of question) {
+  if (typeof key === 'number') {
+    console.log(`Answer ${key}: ${value}`);
+  }
+}
+// const answer = Number(prompt("What's the Answer?"));
+const answer = 3;
+console.log(answer);
+
+// console.log(question.get(answer == 3 ? true : false)); // this way we're rewriting values, which is not the point
+console.log(question.get(question.get('correct') === answer));
+
+// Convert map to array
+console.log([...question]); // using spread operator
+// console.log(question.entries()); // make sure to put it into an array
+console.log([...question.keys()]);
+console.log([...question.values()]);
+
+//////////////////////////  Summary: Which Data Structure to Use? ////////////////////////////////////////////
+
+// where data can actually come from.
+
+// So there are essentially three sources of data.
+
+// First, the data can be written  within the program source code itself like status messages  that will be displayed on a webpage based on user actions.
+
+// Second, data can come from the user interface. So from the webpage, it can either be data that the user inputs into some form or data test already written somehow in the DOM. For example, this can be the users tasks in a todo app or expenses in a budget app or anything like that.
+
+// Finally, data can come from external sources  which is usually a web API.  Now what is a web API?  Well, API stands for Application Programming Interface  and we can basically use a web API to get data  from other web applications.
+// For example we can use a web API  to get the current weather in any city or data about movies  or currency conversion rates  and really every kind of data that you can imagine.
+
+///////// DECIDING //////////
+// So the first decision is this
+//  do we just need a simple list of values?
+//  If so, then we're gonna use an array or a set.
+//  But on the other hand if we need key value pairs,
+//  then we need an object or a map.
+//  So the big difference here is that with a key value pair
+//  we have a way of describing the values, so by using the key.
+//  On the other hand, in a list like an array or a set,
+//  we simply have the values without any description, okay?
