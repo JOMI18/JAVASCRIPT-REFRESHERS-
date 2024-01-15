@@ -17,39 +17,39 @@
 // GOOD LUCK 😀
 
 const game = {
-  team1: 'Bayern Munich',
-  team2: 'Borrussia Dortmund',
+  team1: "Bayern Munich",
+  team2: "Borrussia Dortmund",
   players: [
     [
-      'Neuer',
-      'Pavard',
-      'Martinez',
-      'Alaba',
-      'Davies',
-      'Kimmich',
-      'Goretzka',
-      'Coman',
-      'Muller',
-      'Gnarby',
-      'Lewandowski',
+      "Neuer",
+      "Pavard",
+      "Martinez",
+      "Alaba",
+      "Davies",
+      "Kimmich",
+      "Goretzka",
+      "Coman",
+      "Muller",
+      "Gnarby",
+      "Lewandowski",
     ],
     [
-      'Burki',
-      'Schulz',
-      'Hummels',
-      'Akanji',
-      'Hakimi',
-      'Weigl',
-      'Witsel',
-      'Hazard',
-      'Brandt',
-      'Sancho',
-      'Gotze',
+      "Burki",
+      "Schulz",
+      "Hummels",
+      "Akanji",
+      "Hakimi",
+      "Weigl",
+      "Witsel",
+      "Hazard",
+      "Brandt",
+      "Sancho",
+      "Gotze",
     ],
   ],
-  score: '4:0',
-  scored: ['Lewandowski', 'Gnarby', 'Lewandowski', 'Hummels'],
-  date: 'Nov 9th, 2037',
+  score: "4:0",
+  scored: ["Lewandowski", "Gnarby", "Lewandowski", "Hummels"],
+  date: "Nov 9th, 2037",
   odds: {
     team1: 1.33,
     x: 3.25,
@@ -74,7 +74,7 @@ const allPlayers = [...players1, ...players2]; // this is spreading it
 console.log(allPlayers);
 
 // 4)
-const players1Final = [...players1, 'Thiago', 'Coutinho', 'Perisic'];
+const players1Final = [...players1, "Thiago", "Coutinho", "Perisic"];
 console.log(players1Final);
 
 // 5)
@@ -94,13 +94,13 @@ const printGoals = function (...players) {
   console.log(`${players.length} goals were scored`);
 };
 
-printGoals('Davies', 'Muller', 'Lewandowski', 'Kimmich');
-printGoals('Davies', 'Muller');
+printGoals("Davies", "Muller", "Lewandowski", "Kimmich");
+printGoals("Davies", "Muller");
 printGoals(...game.scored); //spread
 
 // 7)
-team1 < team2 && console.log('Team 1 is more likely to win');
-team1 > team2 && console.log('Team 2 is more likely to win');
+team1 < team2 && console.log("Team 1 is more likely to win");
+team1 > team2 && console.log("Team 2 is more likely to win");
 
 // So, basically, we want this here to be evaluated when the result of this operation is true. And which is the logical operator that continues operation when the first value is true? Well, it's the and operator, right? The 'or' operator short circuits when the first value is true. This is not what we want, because then right now it would short circuit and this would not be evaluated. But in this case, when this is true, we actually want the evaluation to continue.
 
@@ -162,7 +162,7 @@ console.log(average);
 // 3;
 for (const [team, odd] of gameOdds) {
   console.log(team, odd);
-  const teamStr = team === 'x' ? 'draw' : `victory, ${game[team]}`;
+  const teamStr = team === "x" ? "draw" : `victory, ${game[team]}`;
   console.log(`Odd of ${teamStr}: ${odd}`);
 }
 
@@ -190,17 +190,17 @@ console.log(scorers);
 // GOOD LUCK 😀
 
 const gameEvents = new Map([
-  [17, '⚽️ GOAL'],
-  [36, '🔁 Substitution'],
-  [47, '⚽️ GOAL'],
-  [61, '🔁 Substitution'],
-  [64, '🔶 Yellow card'],
-  [69, '🔴 Red card'],
-  [70, '🔁 Substitution'],
-  [72, '🔁 Substitution'],
-  [76, '⚽️ GOAL'],
-  [80, '⚽️ GOAL'],
-  [92, '🔶 Yellow card'],
+  [17, "⚽️ GOAL"],
+  [36, "🔁 Substitution"],
+  [47, "⚽️ GOAL"],
+  [61, "🔁 Substitution"],
+  [64, "🔶 Yellow card"],
+  [69, "🔴 Red card"],
+  [70, "🔁 Substitution"],
+  [72, "🔁 Substitution"],
+  [76, "⚽️ GOAL"],
+  [80, "⚽️ GOAL"],
+  [92, "🔶 Yellow card"],
 ]);
 
 // 1.
@@ -242,6 +242,63 @@ console.log(
 // }
 
 for (const [min, event] of gameEvents) {
-  const half = min <= 45 ? 'FIRST' : 'SECOND';
+  const half = min <= 45 ? "FIRST" : "SECOND";
   console.log(`[${half} HALF] ${min}: ${event}`);
 } // SHORTER WAY
+
+//////////////// Coding Challenge #4 /////////////////////////
+
+// Write a program that receives a list of variable names written in underscore_case and convert them to camelCase.
+
+// The input will come from a textarea inserted into the DOM (see code below), and conversion will happen when the button is pressed.
+
+// THIS TEST DATA (pasted to textarea)
+// underscore_case
+//  first_name
+// Some_Variable
+//   calculate_AGE
+// delayed_departure
+
+// SHOULD PRODUCE THIS OUTPUT (5 separate console.log outputs)
+// underscoreCase      ✅
+// firstName           ✅✅
+// someVariable        ✅✅✅
+// calculateAge        ✅✅✅✅
+// delayedDeparture    ✅✅✅✅✅
+
+// HINT 1: Remember which character defines a new line in the textarea 😉
+// HINT 2: The solution only needs to work for a variable made out of 2 words, like a_b
+// HINT 3: Start without worrying about the ✅. Tackle that only after you have the variable name conversion working 😉
+// HINT 4: This challenge is difficult on purpose, so start watching the solution in case you're stuck. Then pause and continue!
+
+// Afterwards, test with your own test data!
+
+// GOOD LUCK 😀
+
+document.body.append(document.createElement("textarea"));
+document.body.append(document.createElement("button"));
+
+const wordConverter = function () {
+  const text = document.querySelector("textarea").value;
+  // console.log("Hey", text);
+  const rows = text.split("\n"); //defines a new line not (/n)
+  // console.log(rows);
+  for (const [i, row] of rows.entries()) {
+    //Now remember how we can get access to the current index in the for of loop.  So we're looping over an array here,  and so to get the current index,  we need to actually use the entries  of the array, remember that?
+    // console.log(i, row);
+    const newRow = row.toLowerCase().trim().split("_");
+    // console.log(newRow);
+    const [firstValue, secondValue] = newRow;
+    // console.log(firstValue, secondValue);
+    // console.log(secondValue[0].toUpperCase());
+    const finalValue = `${firstValue}${secondValue.replace(
+      secondValue[0],
+      secondValue[0].toUpperCase()
+    )}`;
+    // console.log(finalValue);
+    const padding = `${finalValue.padEnd(20)} ${"✅".repeat(i + 1)}`;
+    console.log(padding);
+  }
+};
+
+document.querySelector("button").addEventListener("click", wordConverter);
