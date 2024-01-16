@@ -1,7 +1,7 @@
 "use strict";
 // Data needed for a later exercise
-const flights =
-  "_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30";
+// const flights =
+//   "_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30";
 
 // Data needed for first part of the section
 const weekDays = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"];
@@ -928,3 +928,43 @@ const planesInLine = function (n) {
 planesInLine(5);
 planesInLine(3);
 planesInLine(12);
+
+/////////////////// String Methods Practice //////////////////////
+// Data needed for a later exercise
+const flights =
+  "_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30";
+
+// 🔴 Delayed Departure from FAO to TXL (11h25)
+//              Arrival from BRU to FAO (11h45)
+//   🔴 Delayed Arrival from HEL to FAO (12h05)
+//            Departure from FAO to LIS (12h30)
+
+//  STEPS
+
+// 1) find something common to split, in this case (+)
+console.log(flights.split("+"));
+const flightDetails = flights.split("+");
+
+const getCodeName = (str) => str.slice(0, 3).toUpperCase();
+
+// 2) loop through the array to get the individual elements
+for (const flight of flightDetails) {
+  const [type, from, to, time] = flight.split(";");
+  // console.log(type, from, to, time);
+
+  // 3) Do the conversions
+  // const finalOutput = `${type.replaceAll("_", " ")} from ${from
+  //   .slice(0, 3)
+  //   .toUpperCase()} to ${to.slice(0, 3).toUpperCase()} (${time.replace(
+  //   ":",
+  //   "h"
+  // )})`; //  instead of slicing twice, a function can be created
+
+  console.log(type); // _D this is it before its replaced, so use it for the condition
+  const finalOutput = `${
+    type.startsWith("_Delayed") ? "🔴" : ""
+  } ${type.replaceAll("_", " ")} from ${getCodeName(from)} to ${getCodeName(
+    to
+  )} (${time.replace(":", "h")})`.padStart(106);
+  console.log(finalOutput);
+}
