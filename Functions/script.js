@@ -205,7 +205,163 @@ for (const consumer of consumers) {
 }
 console.log(meals);
 
-///////////////////////  /////////////////////////
+///////////////////////  Functions Returning Functions /////////////////////////
+const greet = function (greeting) {
+  // console.log(greeting);
+  return function (name) {
+    console.log(`${greeting} ${name}`);
+  };
+};
+const greeter = greet("Hello");
+greeter("Jonas"); //what matters here is that our first function a greet returned a new function that we stored into this variable. And so this variable is now just a function that we can call
+greeter("Feran");
+// And in case you're wondering why that actually works, it is because of something called a closure.
+
+// or
+greet("What's up,")("Pero & Pam"); // greet("What's up,") this is now a function
+
+// And now this example might look a bit weird  and unnecessary for you Like what's the point  of having functions returning other functions?  Well, this will actually become extremely  useful in some situations.  And especially if we're using a really important  programming paradigm called functional programming.
+
+// Mini challenge
+// using arrow functions
+const greetings = (greetMe) => {
+  return (name) => {
+    console.log(`${greetMe} ${name}`);
+  };
+};
+const arrowGreeter = greetings("Welcome to the Arrow verse,");
+arrowGreeter("Jonas");
+arrowGreeter("Feran");
+
+// Challenge
+const greetArr = (greeting) => (name) => console.log(`${greeting} ${name}`);
+
+greetArr("Hi")("Jonas");
+
+///////////////////////  The call, apply, and bind Methods /////////////////////////
+// Setting the this key word manually
+const lufthansa = {
+  airline: "Lufthansa",
+  iataCode: "LH",
+  bookings: [],
+  // book: function() {}
+  book(flightNum, name) {
+    console.log(
+      `${name} booked a seat on ${this.airline} flight ${this.iataCode}${flightNum}`
+    );
+    this.bookings.push({ flight: `${this.iataCode}${flightNum}`, name });
+  },
+};
+
+lufthansa.book(239, "Jonas Schmedtmann");
+lufthansa.book(635, "John Smith");
+
+const eurowings = {
+  airline: "Eurowings",
+  iataCode: "EW",
+  bookings: [],
+};
+
+const book = lufthansa.book; // making a shallow copy of the method but its not a function
+
+// Does NOT work
+// book(23, "Sarah Williams");
+//  Well, it's because this function here,  the book function is now just a regular function call  and so as we learned in one of the previous sections,  in a regular function call,  the this keyword points to undefined,  at least in strict mode.
+
+////////// Call method
+book.call(eurowings, 23, "Sarah Williams"); // the first one directs the this keyword to the  variable
+console.log(eurowings);
+
+book.call(lufthansa, 239, "Mary Cooper"); // Instead, we called the call method and it's then this call method, which will call the book function with the this keyword set to eurowings.
+console.log(lufthansa);
+
+const swiss = {
+  airline: "Swiss Air Lines",
+  iataCode: "LX",
+  bookings: [],
+};
+
+book.call(swiss, 583, "Mary Cooper");
+
+////////// Apply method
+// The only difference is that apply  does not receive a list of arguments  after the this keyword,  so it doesn't receive this list here  but instead, it's gonna take an array  of the arguments,
+
+const flightData = [239, "Sarah Williams"];
+book.apply(swiss, flightData);
+console.log(swiss);
+
+// better use is call then spreading the array
+book.call(swiss, ...flightData);
+
+////////// The bind Method
+// Now, the difference is that bind  does not immediately call the function.  Instead it returns a new function  where this keyword is bound.  So it's set to whatever value we pass into bind.
+const bookEW = book.bind(eurowings);
+bookEW(45, "Paula Quavo");
+const bookLH = book.bind(lufthansa);
+const bookLX = book.bind(swiss);
+
+const bookEW25 = book.bind(eurowings, 25); //And by the way, what we did here, so, basically specifying parts of the argument beforehand, is actually a common pattern called partial application. So essentially, partial application means that a part of the arguments of the original function are already applied, so which means, already set.
+bookEW25("Paula Quavo");
+
+///////// WITH EVENT HANDLER
+lufthansa.planes = 300;
+lufthansa.buyPlanes = function () {
+  console.log(this);
+  this.planes++;
+  console.log(this.planes);
+};
+// lufthansa.buyPlanes(); // further proof that  the this keyword is set dynamically by what calls it
+document
+  .querySelector(".buy")
+  .addEventListener("click", lufthansa.buyPlanes.bind(lufthansa));
+// we learned that in an event handler function, that this keyword always points to the element on which that handler is attached to.
+
+// And so we already know that the call method calls the function. And so that's not what we need. And so therefore, we use bind. Because we already know that bind is gonna return a new function.
+
+/////////////// WITH PARTIAL APPLICATION
+const addTax = (rate, value) => value + rate * value;
+console.log(addTax(0.1, 100));
+
+const addVAT = addTax.bind(null, 0.23); // the first has to refer to the this keyword and since we don't need it- it can be set to null
+// addVAT = value => value + value * 0.23;
+console.log(addVAT(500));
+// When you want to do this yourself, just keep in mind that the order of the arguments then is important.
+
+// Now you could argue that what we just did here  could easily have been done with default parameters.
+
+// But this is actually different,  because this here is creating a brand new,  simply, more specific function  based on a more general function,  which is the addTax function.
+
+// And of course, the example here  could be a lot more complex too, right?  So this really is different  because using binds,  actually it really gives us a new function.  So, it's as if we returned a new specific function  from the addTax function.
+
+// MINI CHALLENGE
+// rewrite this whole example here, but using the technique of one function returning another function.
+
+const addTaxValues = function (values) {
+  // console.log(values);
+  return function (rates) {
+    // console.log(rates);
+    const amount = values + rates * values;
+    console.log(
+      `The Amount payed from a $${values} income at a tax rate of ${rates} is $${amount}`
+    );
+    return amount;
+  };
+};
+
+const taxRates = addTaxValues(200);
+taxRates(0.1);
+console.log(taxRates(0.5));
+
+// Jonas' Solution ==> how it actually works because its not the amount that is set, its the rate
+const addTaxRate = function (rate) {
+  return function (value) {
+    return value + value * rate;
+  };
+};
+const addVAT2 = addTaxRate(0.23);
+console.log(addVAT2(100));
+console.log(addVAT2(23));
+
 ///////////////////////  /////////////////////////
 ///////////////////////  /////////////////////////
 ///////////////////////  /////////////////////////
