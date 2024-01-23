@@ -362,6 +362,101 @@ const addVAT2 = addTaxRate(0.23);
 console.log(addVAT2(100));
 console.log(addVAT2(23));
 
-///////////////////////  /////////////////////////
-///////////////////////  /////////////////////////
-///////////////////////  /////////////////////////
+///////////////////////  Immediately Invoked Function Expressions (IIFE) /////////////////////////
+
+// So sometimes in JavaScript, we need a function that is only executed once. And then never again. So basically a function that disappears right after it's called once.
+const runOnce = function () {
+  console.log("This will never run again");
+};
+runOnce();
+
+// IIFE
+(function () {
+  console.log("This will never run again");
+  const isPrivate = 23;
+  // So for example, this isprivate here is encapsulated inside of this function scope, that's created here. And data encapsulation and data privacy are extremely important concepts in programming. So many times we actually need to protect our variables, 
+  // from being accidentally overwritten by some other parts of the program. Or even with external scripts or libraries.
+  //But for now, keep in mind that it's important to hide variables. And that scopes are a good tool for doing this. And this is also the reason why The Immediately Invoked Function Expressions were invented. 
+  // So basically, this pattern here. So this is not really a feature, of the JavaScript language. It's more of a pattern, that some developers came up with. And that then started to being used, by many other developers.
+})();
+
+// console.log(isPrivate);
+
+(() => console.log("This will ALSO never run again"))();
+// But you might be wondering, why was this pattern actually invented? Well, we already know that functions create scopes, right? And what's important here is that one scope does not have access to variables from an inner scope, right?
+//  For example, right here in this global scope. We do not have access to any variables that are defined in the scope of any of these functions here, right?
+
+{
+  const isPrivate = 23;
+  var notPrivate = 46;
+  // Now, do you remember what also creates a scope in ES6? And that's right. Variables declared with let or const create their own scope inside a block.
+}
+// console.log(isPrivate);
+console.log(notPrivate);
+
+/////////////////////// Closures  /////////////////////////
+// CLOSURES HAVE PRIORITY OVER SCOPE CHAIN
+const secureBooking =function () {
+  let passengerCount=0
+  return function () {
+    passengerCount++
+    console.log(`${passengerCount} Passengers`);
+    
+  }
+  
+}
+const booker= secureBooking()
+booker()
+booker()
+booker()
+console.dir(booker)
+// So we can say that a closure makes a function remember all the variables that existed at the function's birthplace essentially, right?
+// we can also say that thanks to the closure, a function does not lose connection to variables that existed at the function's birthplace.
+
+
+////// MORE EXAMPLES ON CLOSURES
+// EXAMPLE 1
+let f
+
+const g =function () {
+  const a =23
+  f =function () {
+    console.log(a*23);
+  }
+}
+
+g()
+f()
+console.dir(f);
+
+// Re-assigning f function
+
+const h =function () {
+  const b =89
+  f =function () {
+    console.log(b*23);
+  }
+}
+
+h()
+f()
+console.dir(f);
+
+// EXAMPLE 2
+const boardPassengers= function (n,wait) {
+  // CLOSURES ALSO INCLUDE ARGUMENTS
+  const perGroup =n/3
+
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000 // from s to ms
+  )
+  console.log(`We will start boarding in ${wait} seconds`);
+
+}
+const perGroup=1000 // proof that closures have priority over scope chain
+boardPassengers(180, 6)
+
+
+
