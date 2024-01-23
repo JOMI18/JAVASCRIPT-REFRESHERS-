@@ -116,7 +116,7 @@ let height;
 if (height) {
   console.log("Yay! Height is defined");
 } else {
-  console.log("Height is Undefined"); // because 0 is falsy value
+  console.log("Height is Undefined"); // because height is undefined
 }
 
 ////////////////////////// Equality Operators /////////////////////////////////
@@ -148,8 +148,10 @@ if ("18" == 18) {
 ////////////////////////// Boolean Logic /////////////////////////////////
 
 // AND -- if one value is false, everything would be false....but if both A snd B is True- then they'd  both be true ==> True when ALL are true
+// ATAT
 
 // OR -- If at least one value is true then the result would be true... but if they're both false => then the result will be false  ==> True when ONE is true
+// OTOT
 
 // NOT -- inverts true / false values {has higher precedence over OR and AND operators}
 
