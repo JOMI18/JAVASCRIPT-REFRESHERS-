@@ -76,14 +76,13 @@ let ar3 = [23, 67, 90];
 console.log(ar3[0]); // traditional
 console.log(ar3.at(0)); // So here we say, array at position zero.  And so that's why this new method is called  array dot at position zero.
 
-////// Uniqueness 
+////// Uniqueness
 // Well, actually there is one particularity of the At Method,  which makes it quite useful to use  instead of the brackets notation.
 // 1) So, if you want to get to the last element of an array,  or basically start counting from the end of an array,  then you should probably start using the At Method.
 
 // 2) Also, if you want to do something called "method chaining",  which we will talk about later in this section,  then the At Method is also perfect for that,  So basically combining multiple method,  all at the same time
 
 // 3) And then, it's quite helpful to use the At Method instead of the brackets notation.
-
 
 ////// getting last array element
 // So, let's now say that we wanted to get  the last element of the array.  Now, supposing that we do not know the length of the array,
@@ -95,9 +94,8 @@ console.log(ar3.at(-1));
 console.log("perosayemi".at(0));
 console.log("perosayemi".at(-1));
 
-// Now, on the other hand, if you just want to quickly get a value from an array, so just like the first element, then of course you can keep using the brackets notation. And personally, I also do that all the time. 
+// Now, on the other hand, if you just want to quickly get a value from an array, so just like the first element, then of course you can keep using the brackets notation. And personally, I also do that all the time.
 // So basically if all you want to do is something like this, then you can simply keep using the square brackets.
-
 
 ////////////////////  Looping Arrays: forEach /////////////////////////////
 
@@ -112,22 +110,20 @@ for (const [i, movement] of movements.entries()) {
   }
 }
 
-console.log('---- FOREACH ----');
+console.log("---- FOREACH ----");
 movements.forEach(function (mov, i, arr) {
-//   in fact forEach passes in the current element, the index and the entire array that we are looping. And so therefore we can specify them here in our parameter list.
-// but what does matter is the order.  So the first parameter always needs to be  the current element,  the second parameter always the current index  and the third one always the entire array  that we are looping over.
+  //   in fact forEach passes in the current element, the index and the entire array that we are looping. And so therefore we can specify them here in our parameter list.
+  // but what does matter is the order.  So the first parameter always needs to be  the current element,  the second parameter always the current index  and the third one always the entire array  that we are looping over.
   if (mov > 0) {
     console.log(`Movement ${i + 1}: You deposited ${mov}`);
   } else {
     console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
     // Math.abs() // it gives the absolute values
   }
-
 });
 // 0: function(200)
 // 1: function(450)
 // 2: function(400)
-
 
 // Now when should you use forEach and when should you use the for of loop. Well one fundamental difference
 
@@ -135,39 +131,72 @@ movements.forEach(function (mov, i, arr) {
 
 // So if you really need to break out of a loop  then you have to keep using the for of loop,  but other than that  it really comes down to your personal preference.
 
-
-
 ////////////////////// forEach With Maps and Sets ///////////////////////////
 // Maps
 const currencies = new Map([
- ["USD", "United States dollar"],
- ["EUR", "Euro"],
- ["GBP", "Pound sterling"],
+  ["USD", "United States dollar"],
+  ["EUR", "Euro"],
+  ["GBP", "Pound sterling"],
 ]);
 
 currencies.forEach(function (value, key, map) {
   console.log(`${key}: ${value}`);
-})
+});
 
 // Sets
-const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+const currenciesUnique = new Set(["USD", "GBP", "USD", "EUR", "EUR"]);
 console.log(currenciesUnique);
 
 currenciesUnique.forEach(function (value, _, map) {
   // console.log(`${key}: ${value}`);
-  // But now we get USD, USD, and here GBP, GBP. And so what this means is that the key here is exactly the same as the value. 
+  // But now we get USD, USD, and here GBP, GBP. And so what this means is that the key here is exactly the same as the value.
   // So why is that? Well, a set doesn't have keys, right? And it doesn't have indexes either.  And so there is no value that would make sense for the key.
   console.log(`${value}: ${value}`);
   // SOLN
   // And so we can just use an underscore,  which in JavaScript means a throwaway variable.  So that means a variable that is completely unnecessary.  So it's just a convention which we will see again
+});
 
+///////////////////// Data Transformations: map, filter, reduce ////////////////////////////
 
-})
+///////// The Map Method
+// And as we just learned, the map method is yet another way that we can use to loop over aN ARRAY. But unlike for each, the map method will give us a brand new array and this new array will contain in each position the results of applying a callback function to the original array elements.
 
+const eurToUsd = 1.1;
 
-/////////////////////  Data Transformations: map, filter, reduce ////////////////////////////
+const movementsUsd = movements.map(function (mov) {
+  return mov * eurToUsd;
+});
 
-/////////////////////////////////////////////////
+const movementsUsdArr = movements.map((mov) => mov * eurToUsd);
+
+console.log(movements);
+console.log(movementsUsd);
+
+// And so, yeah, we could have written this here and it doesn't look too bad either but it's a completely different philosophy. So here in the map method, we use a function  to solve this problem of creating a new array.
+
+// While here we simply loop over one array  and then manually create a new one.  So these are completely different philosophies  or we can also say paradigms.  So this here is more in line with functional programming
+
+const movementsUSDfor = [];
+for (const mov of movements) {
+  movementsUSDfor.push(mov * eurToUsd);
+}
+
+console.log(movementsUSDfor);
+
+const movementsDescription = movements.map(
+  (mov, i) =>
+    `Movement ${i + 1}: You ${mov > 3 ? "deposited" : "withdrew"} ${Math.abs(
+      mov
+    )}` // this is being returned
+);
+// So the, for each method creates side effects.
+
+// But now here with this map method,  all we did was to return each  of the strings from the callback.
+
+// And so basically they got added into a new array.  And then finally we logged that entire array  to the console and not the elements one by one.
+
+console.log(movementsDescription);
+////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
