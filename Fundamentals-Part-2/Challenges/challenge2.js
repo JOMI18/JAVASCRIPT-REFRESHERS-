@@ -1,3 +1,5 @@
+"use strict"
+
 // CHALLENGE #3
 // Let's go back to Mark and John comparing their BMIs!
 

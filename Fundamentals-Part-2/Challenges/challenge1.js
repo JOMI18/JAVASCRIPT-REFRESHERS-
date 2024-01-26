@@ -1,3 +1,5 @@
+"use strict"
+
 // CHALLENGE #1
 // Back to the two gymnastics teams, the Dolphins and the Koalas! There is a new gymnastics discipline, which works differently.
 

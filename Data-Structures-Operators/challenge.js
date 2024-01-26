@@ -1,3 +1,5 @@
+"use strict"
+
 /////////////////////// Coding Challenge #1 //////////////////////////////////////////
 
 // We're building a football betting app (soccer for my American friends 😅)!
