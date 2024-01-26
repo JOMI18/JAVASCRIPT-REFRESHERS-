@@ -601,7 +601,7 @@ console.log(new Set("jonasschmedtmann").size);
 //////////////////////////////////////  Maps: Fundamentals //////////////////////////////
 // a map is a data structure that we can use to map values to keys. So, just like an object data is stored in key value pairs in maps. Now, the big difference between objects and maps is that in maps, the keys can have any type and this can be huge.
 //  So, in objects, the keys are basically always strings. But in maps, we can have any type of key. It could even be objects, or arrays, or other maps.
-
+// MOSA
 const rest = new Map();
 rest.set("name", "Classico Italiano"); // set is adding it
 rest.set(1, "Firenze, Italy");

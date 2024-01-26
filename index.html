@@ -10,7 +10,7 @@
         /* min-height: 100vh; */
         display: flex;
         flex-direction: column;
-        align-items: center;
+        /* align-items: center; */
         background: linear-gradient(to top left, #8a58e6, #898d88);
       }
       h1 {
@@ -22,58 +22,80 @@
         text-align: center;
         color: white;
       }
+      nav{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        /* background-color: aqua; */
+        padding: 4px;
+      }
       ul {
         list-style: square;
         font-size: 44px;
         flex-direction: column;
+        /* background-color: rgba(255, 228, 196, 0.397); */
         display: flex;
+        /* padding: 20px; */
         gap: 18px;
       }
 
       li a:link,
       li a:visited {
         display: inline-block;
+        padding: 10px;
         color: black;
       }
     </style>
   </head>
   <body>
     <h1>JS CONCEPTS</h1>
-    <ul>
-      <li>
-        <a href="./Javascript-refresher-course/HTML/index.html"
-          >Quick Refresher</a
-        >
-      </li>
-      <li>
-        <a href="./Fundamentals-Part-1/index.html">Fundamentals Part one</a>
-      </li>
-      <li>
-        <a href="./Fundamentals-Part-2/index.html">Fundamentals Part two</a>
-      </li>
-      <li>
-        <a href="./Developer-Skills/index.html">Developers Skills Mode</a>
-      </li>
-      <li>
-        <a href="./Mini-Projects/Guess-Numbers/numbers.html"
-          >Guess My Numbers
-        </a>
-      </li>
-      <li>
-        <a href="./Mini-Projects/Modal-Windows/modals.html">Creating Modals </a>
-      </li>
-      <li>
-        <a href="./Mini-Projects/Pig-Game/index.html">Pig Game </a>
-      </li>
-      <li>
-        <a href="./Behind-the-Scenes/index.html">Behind the Scenes </a>
-      </li>
-      <li>
-        <a href="./Data-Structures-Operators/index.html">Data Structures </a>
-      </li>
-      <li>
-        <a href="./Functions/index.html">Functions </a>
-      </li>
-    </ul>
+ 
+    <nav>
+      <ul>
+        <li>
+          <a href="./Javascript-refresher-course/HTML/index.html"
+            >Quick Refresher</a
+          >
+        </li>
+        <li>
+          <a href="./Fundamentals-Part-1/index.html">Fundamentals Part one</a>
+        </li>
+        <li>
+          <a href="./Fundamentals-Part-2/index.html">Fundamentals Part two</a>
+        </li>
+        <li>
+          <a href="./Developer-Skills/index.html">Developers Skills Mode</a>
+        </li>
+        <li>
+          <a href="./Behind-the-Scenes/index.html">Behind the Scenes </a>
+        </li>
+       
+      </ul>
+      <ul> 
+        <li>
+          <a href="./Mini-Projects/Guess-Numbers/numbers.html"
+            >Guess My Numbers
+          </a>
+        </li>
+        <li>
+          <a href="./Mini-Projects/Modal-Windows/modals.html">Creating Modals </a>
+        </li>
+        <li>
+          <a href="./Mini-Projects/Pig-Game/index.html">Pig Game </a>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <a href="./Data-Structures-Operators/index.html">Data Structures </a>
+        </li>
+        <li>
+          <a href="./Functions/index.html">Functions </a>
+        </li>
+        <li>
+          <a href="./Working-With-Arrays/index.html">Arrays </a>
+        </li>
+      </ul>
+    </nav>
   </body>
 </html>
