@@ -60,3 +60,33 @@ const inputTransferAmount = document.querySelector(".form__input--amount");
 const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
+
+///////////////////////// Creating DOM Elements ////////////////////////////////
+
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = ""; // Now innerHTML here is a little bit similar to text content.
+  // .textContent=0
+  //  So remember that now the difference is that textcontent simply returns the text itself while innerHTML returns everything, including the HTML. So all the HTML tags will be included.
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? "deposit" : "withdrawal";
+    const html = `
+    <div class="movements__row">
+          <div class="movements__type movements__type--${type}">${
+      i + 1
+    }  ${type}</div>
+          <div class="movements__value">${mov}</div>
+        </div>
+    `;
+
+    // So we need to attach this HTML somehow into this container -So into this movements element.
+    // And to do that,we will use a method called insertAdjacentHTML.
+    containerMovements.insertAdjacentHTML("afterbegin", html);
+    // And this method accepts two strings.
+    // The first string is the position  in which we want to attach the HTML.
+    // because now we need to specify the second argument and that is the string containing the HTML
+
+    // And finally, I wanted to show you why I used afterbegin and not beforeend. Well, let me show you what happened with beforeend. I think this is how it works. So beforeend. Yeah. So with that, the order of the movements would be inverted.
+  });
+};
+
+displayMovements(account1.movements);

@@ -120,6 +120,7 @@ movements.forEach(function (mov, i, arr) {
     console.log(`Movement ${i + 1}: You deposited ${mov}`);
   } else {
     console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
+    // Math.abs() // it gives the absolute values
   }
 
 });
