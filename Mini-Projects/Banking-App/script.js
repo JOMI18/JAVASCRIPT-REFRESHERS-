@@ -90,3 +90,50 @@ const displayMovements = function (movements) {
 };
 
 displayMovements(account1.movements);
+
+//////////////////////////////// Computing Usernames //////////////////////////////////
+
+// Thought Process
+// And so how do we take each of the first letters here? Well, we could simply loop over the array, and then take the first letter in each iteration,
+// and add them into a new array. And then in the end, we would join that array,  and we would end up with just a string of stw.  So let's do what I just said.  So looping over this array,  taking the first letter and then putting it  into a new array.  And that is exactly what the map method does.  We can do that directly here,
+
+const user = "Steven Thomas Williams"; // stw
+
+// 1. const username= user.toLowerCase()
+// 2.const username= user.toLowerCase().split(" ") // returns an array
+// 3. const username= user.toLowerCase().split(" ").map(function (word) {
+//   return word[0]
+// }) // returns an array so we can add the join method to take it to a string
+// 4. const username = user
+//   .toLowerCase()
+//   .split(" ")
+//   .map(function (word) {
+//     return word[0];
+//   })
+//   .join(""); // returns an array so we can add the join method to take it to a string
+// 5. const username = user
+//   .toLowerCase()
+//   .split(" ")
+//   .map((word) => word[0]) // take to arrow func
+//   .join("");
+
+// console.log(username);
+
+// 6. Take to function based
+
+const createUsernames = function (usersAcc) {
+  usersAcc.forEach((acc) => {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word[0])
+      .join("");
+  });
+};
+
+// But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or the for each method.
+
+// Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array. So in this array here, and so what we want is to simply loop over // this array here, and then do something.
+(createUsernames(accounts))
+
+console.log(accounts);
