@@ -74,7 +74,7 @@ const displayMovements = function (movements) {
           <div class="movements__type movements__type--${type}">${
       i + 1
     }  ${type}</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}€</div>
         </div>
     `;
 
@@ -134,6 +134,64 @@ const createUsernames = function (usersAcc) {
 // But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or the for each method.
 
 // Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array. So in this array here, and so what we want is to simply loop over // this array here, and then do something.
-(createUsernames(accounts))
+createUsernames(accounts);
 
 console.log(accounts);
+
+//////////////////////////////////// Using reduce method to create the total balances /////////////////////////////////////////////
+
+const calcDisplayedBalance = function (movement) {
+  console.log(movement);
+  const balance = movement.reduce(function (acc, curMov) {
+    return acc + curMov;
+  }, 0);
+
+  labelBalance.textContent = `${balance}€`;
+};
+
+calcDisplayedBalance(account1.movements);
+
+//////////////////////////////////// Implementing the chaining method  /////////////////////////////////////////////
+
+const calcDisplaySummary = function (movements) {
+  const income = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${income}€`;
+
+  const withdrawals = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
+
+  // const interest = movements
+  //   .filter((mov) => mov > 0)
+  //   .map((deposits) => (deposits * 1.2) / 100).reduce((acc, intr) => acc + intr, 0);
+  //   labelSumInterest.textContent = `${interest}€`;
+
+  //   Great, but now let's say that the bank  introduces a new rule.  So now the bank only pays an interest  if that interest is at least one Euro
+
+  const interest = movements
+    .filter((mov) => mov > 0)
+    .map((deposits) => (deposits * 1.2) / 100)
+    .filter((deposits, i, arr) => {
+      console.log(arr);
+      return deposits >= 1;
+    }).reduce((acc, intr) => acc + intr, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+calcDisplaySummary(account1.movements);
+
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+
+///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////////////////////////////////////// /////////////////////////////////////////////////

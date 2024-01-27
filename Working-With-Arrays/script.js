@@ -196,16 +196,80 @@ const movementsDescription = movements.map(
 // And so basically they got added into a new array.  And then finally we logged that entire array  to the console and not the elements one by one.
 
 console.log(movementsDescription);
-////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+
+////////////////// The Filter Method
+
+const deposits = movements.filter(function (mov, i, arr) {
+  // return booleans
+  return mov > 0;
+});
+const depositsFor = [];
+for (const mov of movements) {
+  mov > 0 ? depositsFor.push(mov) : " ";
+}
+const withdrawals = movements.filter(function (mov) {
+  // return booleans
+  return mov < 0;
+});
+
+console.log(deposits);
+console.log(depositsFor);
+console.log(withdrawals);
+
+////////////////////// The reduce Method
+
+// accumulator -> SNOWBALL
+const balanceGlobal = movements.reduce(function (acc, cur, i, arr) {
+  console.log(`Iteration ${i}: ${acc}`);
+  return acc + cur;
+}, 10);
+console.log(balanceGlobal);
+
+const balance = movements.reduce((acc, cur) => acc + cur, 0);
+console.log(balance);
+
+let balance2 = 0;
+for (const mov of movements) balance2 += mov;
+console.log(balance2);
+
+// Maximum value
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) return acc;
+  else return mov;
+}, movements[0]);
+console.log(max);
+
+/////////////////////   The Magic of Chaining Methods ///////////////////////////
+//  you can continually chain methods as long as it returns an array
+const totalDepositsUSD = movements
+  .filter((mov) => mov > 0)
+  //   And so again,  if we want to see that result of only this operation,  we can check out the current array  and the next array method that has chained on that filter.
+  // .map((mov) => mov * eurToUsd)
+  .map((mov, i, arr) => {
+    console.log(arr);
+    return mov * eurToUsd;
+  })
+  .reduce((acc, currMov) => acc + currMov, 0);
+// as a result you cant chain any method to reduce
+console.log(totalDepositsUSD);
+
+
+// let me just give you a couple of remarks about chaining.  
+// So first we should not overuse chaining,  so we should try to optimize it  because chaining tons of methods one after the other  can cause a real performance issues
+// if we have really huge arrays. So if we have a huge chain of methods, chained one after the other, we should try to compress all the functionality that they do into as little methods as possible.
+// For example, sometimes we create way more map methods then we actually need, where we could just do it all in just one map call. So when you chain methods like this, keep looking for opportunities of keeping up your codes performance.
+
+// And second, it is a bad practice in JavaScript to chain methods that mutate the underlying original array. And an example of that is the splice method. So again, you should not chain a method like the splice or the reverse method. 
+// I mean, you can do that, and for a small application like this one, it's not a big deal and it's not going to cause problems, but in a large scale application, it's usually always a good practice to avoid mutating array
+
+
+
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
+
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
