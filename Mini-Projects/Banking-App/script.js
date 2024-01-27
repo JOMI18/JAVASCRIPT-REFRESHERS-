@@ -33,7 +33,14 @@ const account4 = {
   pin: 4444,
 };
 
-const accounts = [account1, account2, account3, account4];
+const account5 = {
+  owner: "Oluwajomiloju Odedairo",
+  movements: [10000, 250, -100, 5000, -50, 1300, 70, 1900],
+  interestRate: 2, // %
+  pin: 1234,
+};
+
+const accounts = [account1, account2, account3, account4, account5];
 
 // Elements
 const labelWelcome = document.querySelector(".welcome");
@@ -89,7 +96,7 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 
 //////////////////////////////// Computing Usernames //////////////////////////////////
 
@@ -149,42 +156,108 @@ const calcDisplayedBalance = function (movement) {
   labelBalance.textContent = `${balance}€`;
 };
 
-calcDisplayedBalance(account1.movements);
+// calcDisplayedBalance(account1.movements);
 
 //////////////////////////////////// Implementing the chaining method  /////////////////////////////////////////////
 
-const calcDisplaySummary = function (movements) {
-  const income = movements
+// const calcDisplaySummary = function (movements) {
+//   const income = movements
+//     .filter((mov) => mov > 0)
+//     .reduce((acc, mov) => acc + mov, 0);
+//   labelSumIn.textContent = `${income}€`;
+
+//   const withdrawals = movements
+//     .filter((mov) => mov < 0)
+//     .reduce((acc, mov) => acc + mov, 0);
+//   labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
+
+//   // const interest = movements
+//   //   .filter((mov) => mov > 0)
+//   //   .map((deposits) => (deposits * 1.2) / 100).reduce((acc, intr) => acc + intr, 0);
+//   //   labelSumInterest.textContent = `${interest}€`;
+
+//   //   Great, but now let's say that the bank  introduces a new rule.  So now the bank only pays an interest  if that interest is at least one Euro
+
+//   const interest = movements
+//     .filter((mov) => mov > 0)
+//     .map((deposits) => (deposits * 1.2) / 100)
+//     .filter((deposits, i, arr) => {
+//       console.log(arr);
+//       return deposits >= 1;
+//     })
+//     .reduce((acc, intr) => acc + intr, 0);
+//   labelSumInterest.textContent = `${interest}€`;
+// };
+
+// And so, in order to get access to that data,  so to that interest rate,  we now need more than just the movements.  Instead of the movements, we want now, the entire account.  Because then we can take the movements from the account,  and also the interest rate.
+//  Alright, so again, we will now change this function  and pass in the entire account,  and not just the movements array.
+// And so then from there, we will be able to take  the movements that we need to calculate  these three statistics here.
+
+const calcDisplaySummary = function (acc) {
+  const income = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${income}€`;
 
-  const withdrawals = movements
+  const withdrawals = acc.movements
     .filter((mov) => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
 
-  // const interest = movements
-  //   .filter((mov) => mov > 0)
-  //   .map((deposits) => (deposits * 1.2) / 100).reduce((acc, intr) => acc + intr, 0);
-  //   labelSumInterest.textContent = `${interest}€`;
-
-  //   Great, but now let's say that the bank  introduces a new rule.  So now the bank only pays an interest  if that interest is at least one Euro
-
-  const interest = movements
+  const interest = acc.movements
     .filter((mov) => mov > 0)
-    .map((deposits) => (deposits * 1.2) / 100)
+    .map((deposits) => (deposits * acc.interestRate) / 100)
+    //  So right now, for all of the accounts, the interest rate is now calculated using this 1.2 interest rate. However, as we take a look at the accounts, each of them actually has a different interest rate.
+    // So this one has 1.2, but this one has 1.5, and this one has less, so it gets a less interest. And so now of course, we also want to dynamically use this interest rate depending on the current user, right?
     .filter((deposits, i, arr) => {
       console.log(arr);
       return deposits >= 1;
-    }).reduce((acc, intr) => acc + intr, 0);
+    })
+    .reduce((acc, intr) => acc + intr, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
 
-calcDisplaySummary(account1.movements);
+// calcDisplaySummary(account1.movements);
 
-///////////////////////////////////////////////// /////////////////////////////////////////////////
+//////////////////////////////// Implementing the Find Method and Working with Event Handlers ///////////////////////////////////////
 
+let currentAccount;
+btnLogin.addEventListener("click", function (e) {
+  // Prevent form from submitting, therefore reloading
+  e.preventDefault();
+
+  // hitting enter on enter fields submit the form
+
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+
+  // if (currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {// optional chaining is a much better soln to first check if a user account exists
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Display UI and message
+
+    //  labelWelcome.textContent = `Welcome ${currentAccount.owner}` // fullName
+    //  labelWelcome.textContent = `Welcome ${currentAccount.owner.split(" ")}` // adds a , between names, iff theres no space it separates every letter with a ,
+    labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(" ")[0]}`;
+
+    containerApp.style.opacity = 100;
+
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur(); // removes cursor focus
+
+    // Display movements
+    displayMovements(currentAccount.movements);
+
+    // Display balance
+    calcDisplayedBalance(currentAccount.movements);
+
+    // Display summary
+    // calcDisplaySummary(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  }
+});
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
 ///////////////////////////////////////////////// /////////////////////////////////////////////////

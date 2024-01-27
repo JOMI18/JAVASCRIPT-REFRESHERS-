@@ -2,6 +2,36 @@
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
+// Data
+const account1 = {
+  owner: "Jonas Schmedtmann",
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
+};
+
+const account2 = {
+  owner: "Jessica Davis",
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
+};
+
+const account3 = {
+  owner: "Steven Thomas Williams",
+  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  interestRate: 0.7,
+  pin: 3333,
+};
+
+const account4 = {
+  owner: "Sarah Smith",
+  movements: [430, 1000, 700, 50, 90],
+  interestRate: 1,
+  pin: 4444,
+};
+
+const accounts = [account1, account2, account3, account4];
 
 // const currencies = new Map([
 //   ["USD", "United States dollar"],
@@ -253,22 +283,40 @@ const totalDepositsUSD = movements
 // as a result you cant chain any method to reduce
 console.log(totalDepositsUSD);
 
-
-// let me just give you a couple of remarks about chaining.  
+// let me just give you a couple of remarks about chaining.
 // So first we should not overuse chaining,  so we should try to optimize it  because chaining tons of methods one after the other  can cause a real performance issues
 // if we have really huge arrays. So if we have a huge chain of methods, chained one after the other, we should try to compress all the functionality that they do into as little methods as possible.
 // For example, sometimes we create way more map methods then we actually need, where we could just do it all in just one map call. So when you chain methods like this, keep looking for opportunities of keeping up your codes performance.
 
-// And second, it is a bad practice in JavaScript to chain methods that mutate the underlying original array. And an example of that is the splice method. So again, you should not chain a method like the splice or the reverse method. 
+// And second, it is a bad practice in JavaScript to chain methods that mutate the underlying original array. And an example of that is the splice method. So again, you should not chain a method like the splice or the reverse method.
 // I mean, you can do that, and for a small application like this one, it's not a big deal and it's not going to cause problems, but in a large scale application, it's usually always a good practice to avoid mutating array
 
+/////////////  The Find Method
+// we can use the Find method to retrieve one element  of an array based on a condition.
 
+const firstWithdrawal = movements.find((mov) => mov < 0);
+// So you see that just like the Filter method,  the Find method also needs a callback function  that returns a Boolean.  So the result of this is of course,  is either true or false.  Now, unlike the Filter method,  the Find method will actually not return a new array  but it will only return the first element  in the array that satisfies this condition.
 
+console.log(movements);
+// but there are two fundamental differences.
 
+// First Filter returns all the elements  that match the condition while the Find method  only returns the first one and second
+
+// and even more important, the Filter method returns a new array while Find only returns the element itself and not an array, okay? So make sure that you understand this fundamental difference.
+console.log(firstWithdrawal);
+
+console.log(accounts);
+const account = accounts.find((acc) => acc.owner === "Jessica Davis");
+
+console.log(account);
+
+for (const acc of accounts) {
+  acc.owner === "Jessica Davis" ? console.log(account) : "";
+}
+
+////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
-
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
