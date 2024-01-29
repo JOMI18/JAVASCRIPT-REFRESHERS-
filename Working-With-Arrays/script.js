@@ -314,7 +314,10 @@ for (const acc of accounts) {
   acc.owner === "Jessica Davis" ? console.log(account) : "";
 }
 
-////////////////////////////////////
+////////////////  The findIndex Method
+// Now, to delete an element from an array, we use the splice method, remember, but for the splice method, we need the index at which we want to delete, and where could that index come from, and you guessed it from the findIndex method.
+
+////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
