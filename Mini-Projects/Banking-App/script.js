@@ -104,7 +104,7 @@ const displayMovements = function (movements) {
 // And so how do we take each of the first letters here? Well, we could simply loop over the array, and then take the first letter in each iteration,
 // and add them into a new array. And then in the end, we would join that array,  and we would end up with just a string of stw.  So let's do what I just said.  So looping over this array,  taking the first letter and then putting it  into a new array.  And that is exactly what the map method does.  We can do that directly here,
 
-const user = "Steven Thomas Williams"; // stw
+// const user = "Steven Thomas Williams"; // stw
 
 // 1. const username= user.toLowerCase()
 // 2.const username= user.toLowerCase().split(" ") // returns an array
@@ -147,13 +147,28 @@ console.log(accounts);
 
 //////////////////////////////////// Using reduce method to create the total balances /////////////////////////////////////////////
 
-const calcDisplayedBalance = function (movement) {
-  console.log(movement);
-  const balance = movement.reduce(function (acc, curMov) {
+// const calcDisplayedBalance = function (movement) {
+//   console.log(movement);
+//   // here we're not storing the account balance in any variable, so we cant have access to it
+//   const balance = movement.reduce(function (acc, curMov) {
+//     return acc + curMov;
+//   }, 0);
+
+//   labelBalance.textContent = `${balance}€`;
+// };
+
+const calcDisplayedBalance = function (acc) {
+  // as a result
+  const balance = acc.movements.reduce(function (acc, curMov) {
     return acc + curMov;
   }, 0);
-
+  acc.balance = balance; // or you can set it directly
   labelBalance.textContent = `${balance}€`;
+
+  // acc.balance = acc.movements.reduce(function (acc, curMov) {
+  //   return acc + curMov;
+  // }, 0);
+  // labelBalance.textContent = `${acc.balance}€`;
 };
 
 // calcDisplayedBalance(account1.movements);
@@ -210,7 +225,7 @@ const calcDisplaySummary = function (acc) {
     //  So right now, for all of the accounts, the interest rate is now calculated using this 1.2 interest rate. However, as we take a look at the accounts, each of them actually has a different interest rate.
     // So this one has 1.2, but this one has 1.5, and this one has less, so it gets a less interest. And so now of course, we also want to dynamically use this interest rate depending on the current user, right?
     .filter((deposits, i, arr) => {
-      console.log(arr);
+      // console.log(arr);
       return deposits >= 1;
     })
     .reduce((acc, intr) => acc + intr, 0);
@@ -221,12 +236,26 @@ const calcDisplaySummary = function (acc) {
 
 //////////////////////////////// Implementing the Find Method and Working with Event Handlers ///////////////////////////////////////
 
+const updateUI = function (account) {
+  displayMovements(account.movements);
+  calcDisplayedBalance(account);
+  calcDisplaySummary(account);
+};
+
 let currentAccount;
 btnLogin.addEventListener("click", function (e) {
   // Prevent form from submitting, therefore reloading
   e.preventDefault();
 
-  // hitting enter on enter fields submit the form
+  // hitting enter on enter in the fields, also  submits the form
+
+  if (inputLoginUsername.value === "" && inputLoginPin.value === "") {
+    alert("The input fields can not be empty");
+  }
+
+  // else{
+  //   alert("Invalid Entry")
+  // }
 
   currentAccount = accounts.find(
     (acc) => acc.username === inputLoginUsername.value
@@ -248,18 +277,85 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginPin.blur(); // removes cursor focus
 
     // Display movements
-    displayMovements(currentAccount.movements);
+    // displayMovements(currentAccount.movements);
 
-    // Display balance
-    calcDisplayedBalance(currentAccount.movements);
+    // // Display balance
+    // // calcDisplayedBalance(currentAccount.movements);
+    // calcDisplayedBalance(currentAccount);
 
-    // Display summary
-    // calcDisplaySummary(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
+    // // Display summary
+    // // calcDisplaySummary(currentAccount.movements);
+    // calcDisplaySummary(currentAccount);
+
+    // Updating the Ui
+
+    updateUI(currentAccount);
   }
 });
-///////////////////////////////////////////////// /////////////////////////////////////////////////
-///////////////////////////////////////////////// /////////////////////////////////////////////////
+////////////////////////////////////////////////  Implementing Transfers ////////////////////////////////////////////////
+
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  // const receiverAcc =  inputTransferTo.value // its not useful to just get the value, its important to find the object of the receiver account
+  const receiverAcc = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+  console.log(amount, receiverAcc);
+  inputTransferAmount.value = inputTransferTo.value = "";
+
+  // conditions for the transfer to be valid are:
+  // 1. that the amount is positive,
+  // 2. that the recipient account exists,
+  // 3. the current amount is greater than the money being transferred
+  // 4. I can nor send money to myself
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    console.log("Transfer Valid");
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+
+    // Updating the Ui
+
+    updateUI(currentAccount);
+  }
+});
+
+/////////////////////////////////// The Find Index and  Closing Accounts ////////////////////////////////////////
+
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    console.log("Can delete");
+    const index = accounts.findIndex(
+      //  Now, there's just a couple of things I want you to note here, both the find and findIndex methods
+      //  get access to also the current index, and the current entire array. So as always, besides the current element, these other two values are also available. But in practice, I never found these useful.
+      // And second, the both the find and findIndex methods  were added to JavaScript in ESX.  And so they will not work in like super old browsers.  But don't worry, there is going to be a lecture  a little bit later on how to support  all of these old browsers.
+      (acc) => acc.username === currentAccount.username
+    );
+    // .indexOf
+    //  Now, you might notice that this is actually similar  to the indexOf method that we studied before.  So, indexOf,  and then here we can pass in some value, all right?  Now, the big difference here is that with indexOf,
+    //  we can only search for a value that is in the array.  So, if the array contains the 23, then it's true,  and if not, then it's false.  But on the other hand, with findIndex,  we can create a complex condition like this one,
+    // and of course, it doesn't have to be  the equality operator here.  It can be anything that returns true or false, okay?  And here we can simply check  if the array contains this value or not,  and if so, return the indexOf it.
+    // So both return an index number,  but this one here is a lot simpler.
+
+    // DELETE ACCOUNT
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = "";
+});
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
 
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
