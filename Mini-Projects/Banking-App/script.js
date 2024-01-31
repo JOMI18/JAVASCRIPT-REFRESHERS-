@@ -70,11 +70,16 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 ///////////////////////// Creating DOM Elements ////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ""; // Now innerHTML here is a little bit similar to text content.
   // .textContent=0
   //  So remember that now the difference is that textcontent simply returns the text itself while innerHTML returns everything, including the HTML. So all the HTML tags will be included.
-  movements.forEach(function (mov, i) {
+
+  const movOrder = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  // create a copy of the array don't sort directly
+
+  // movements.forEach(function (mov, i) {
+  movOrder.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
     const html = `
     <div class="movements__row">
@@ -129,6 +134,9 @@ const displayMovements = function (movements) {
 // 6. Take to function based
 
 const createUsernames = function (usersAcc) {
+  // But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or the for each method.
+  // Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array. So in this array here, and so what we want is to simply loop over // this array here, and then do something.
+
   usersAcc.forEach((acc) => {
     acc.username = acc.owner
       .toLowerCase()
@@ -137,10 +145,6 @@ const createUsernames = function (usersAcc) {
       .join("");
   });
 };
-
-// But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or the for each method.
-
-// Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array. So in this array here, and so what we want is to simply loop over // this array here, and then do something.
 createUsernames(accounts);
 
 console.log(accounts);
@@ -150,8 +154,8 @@ console.log(accounts);
 // const calcDisplayedBalance = function (movement) {
 //   console.log(movement);
 //   // here we're not storing the account balance in any variable, so we cant have access to it
-//   const balance = movement.reduce(function (acc, curMov) {
-//     return acc + curMov;
+//   const balance = movement.reduce(function (accum, curMov) {
+//     return accum + curMov;
 //   }, 0);
 
 //   labelBalance.textContent = `${balance}€`;
@@ -159,14 +163,14 @@ console.log(accounts);
 
 const calcDisplayedBalance = function (acc) {
   // as a result
-  const balance = acc.movements.reduce(function (acc, curMov) {
-    return acc + curMov;
+  const balance = acc.movements.reduce(function (accum, curMov) {
+    return accum + curMov;
   }, 0);
   acc.balance = balance; // or you can set it directly
-  labelBalance.textContent = `${balance}€`;
+  labelBalance.textContent = `${acc.balance}€`;
 
-  // acc.balance = acc.movements.reduce(function (acc, curMov) {
-  //   return acc + curMov;
+  // acc.balance = acc.movements.reduce(function (accum, curMov) {
+  //   return accum + curMov;
   // }, 0);
   // labelBalance.textContent = `${acc.balance}€`;
 };
@@ -178,17 +182,17 @@ const calcDisplayedBalance = function (acc) {
 // const calcDisplaySummary = function (movements) {
 //   const income = movements
 //     .filter((mov) => mov > 0)
-//     .reduce((acc, mov) => acc + mov, 0);
+//     .reduce((accum, mov) => accum + mov, 0);
 //   labelSumIn.textContent = `${income}€`;
 
 //   const withdrawals = movements
 //     .filter((mov) => mov < 0)
-//     .reduce((acc, mov) => acc + mov, 0);
+//     .reduce((accum, mov) => accum + mov, 0);
 //   labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
 
 //   // const interest = movements
 //   //   .filter((mov) => mov > 0)
-//   //   .map((deposits) => (deposits * 1.2) / 100).reduce((acc, intr) => acc + intr, 0);
+//   //   .map((deposits) => (deposits * 1.2) / 100).reduce((accum, intr) => accum + intr, 0);
 //   //   labelSumInterest.textContent = `${interest}€`;
 
 //   //   Great, but now let's say that the bank  introduces a new rule.  So now the bank only pays an interest  if that interest is at least one Euro
@@ -200,7 +204,7 @@ const calcDisplayedBalance = function (acc) {
 //       console.log(arr);
 //       return deposits >= 1;
 //     })
-//     .reduce((acc, intr) => acc + intr, 0);
+//     .reduce((accum, intr) => accum + intr, 0);
 //   labelSumInterest.textContent = `${interest}€`;
 // };
 
@@ -211,12 +215,12 @@ const calcDisplayedBalance = function (acc) {
 const calcDisplaySummary = function (acc) {
   const income = acc.movements
     .filter((mov) => mov > 0)
-    .reduce((acc, mov) => acc + mov, 0);
+    .reduce((accum, mov) => accum + mov, 0);
   labelSumIn.textContent = `${income}€`;
 
   const withdrawals = acc.movements
     .filter((mov) => mov < 0)
-    .reduce((acc, mov) => acc + mov, 0);
+    .reduce((accum, mov) => accum + mov, 0);
   labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
 
   const interest = acc.movements
@@ -228,7 +232,7 @@ const calcDisplaySummary = function (acc) {
       // console.log(arr);
       return deposits >= 1;
     })
-    .reduce((acc, intr) => acc + intr, 0);
+    .reduce((accum, intr) => accum + intr, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
 
@@ -356,11 +360,65 @@ btnClose.addEventListener("click", function (e) {
   }
   inputCloseUsername.value = inputClosePin.value = "";
 });
-///////////////////////////////////////////////// /////////////////////////////////////////////////
 
-///////////////////////////////////////////////// /////////////////////////////////////////////////
-///////////////////////////////////////////////// /////////////////////////////////////////////////
-///////////////////////////////////////////////// /////////////////////////////////////////////////
+//////////////////////// Implementing the Some Method and the request Loan Functionality /////////////////////////////
+
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  const requestedLoanValid = currentAccount.movements.some(
+    (mov) => mov >= amount * 0.1
+  );
+  if (amount > 0 && requestedLoanValid) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = "";
+});
+
+/////////////////////////////// Sorting Arrays ///////////////////////////////
+
+let sortedState = false; // monitoring the state
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sortedState);
+  sortedState = !sortedState;
+});
+
+
+
+////////////////////////////// //////////////////////////////////
+
+
+// Now, besides these obvious Iterables that I just mentioned,  like Maps or Sets another great example  of an array like structure  is the result of using querySelectorAll().
+
+// So maybe you remember that querySelectorAll() returns,  something called a NodeList,  which is something like an array,  which contains all the selected elements.  But it's not a real array,  and so it doesn't have methods like map(), for example.
+
+// But it's not a real array,  and so it doesn't have most of the array methods  like map() or reduce().  So if we actually wanted to use  a real array method like that on a NodeList,  we would first need to convert the NodeList to an array.
+
+// And for that Array.from() is perfect.
+
+labelBalance.addEventListener("click", function () { //So we can attach a EventListeners to every object. It doesn't have to be a button.
+  
+  const movementsUI = Array.from(
+    document.querySelectorAll(".movements__value"),
+    (el) => Number(el.textContent.replace("€", ""))
+  );
+  console.log(movementsUI);
+
+  const movementsUI2 = [...document.querySelectorAll(".movements__value")]; // another way to get an array
+});
+
+// So again, let's pretend that we only have these values,  so all of these movements only stored here  in the user interface,  but we do not have them somewhere in our code.  So we don't have an array containing these values.
+// But now let's say we want to calculate their sum.  And so therefore we need to somehow get them first
+
+// from the user interface and then do the calculation  based on that.  So let's create a variable called movementsUI.  So the ones that we get from the user interface.
+
 
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
