@@ -136,3 +136,11 @@ const calcAverageHumanAgeArr = (ages) => {
 console.log("-------USING MULTIPLE CHAINING ------");
 console.log(calcAverageHumanAgeArr([5, 2, 4, 1, 15, 8, 3]));
 console.log(calcAverageHumanAgeArr([16, 6, 10, 5, 6, 1, 4]));
+
+
+// Random dice rolls
+
+// const dice = Array.from({ length: 100 }, (_, i) =>
+//   // Math.trunc(Math.random() *1)
+// );
+// console.log(dice);

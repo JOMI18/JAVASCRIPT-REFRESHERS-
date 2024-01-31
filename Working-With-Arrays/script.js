@@ -317,11 +317,172 @@ for (const acc of accounts) {
 ////////////////  The findIndex Method
 // Now, to delete an element from an array, we use the splice method, remember, but for the splice method, we need the index at which we want to delete, and where could that index come from, and you guessed it from the findIndex method.
 
-////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+//////////////////// The Some Method
+console.log(movements);
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+// EQUALITY
+console.log(movements.includes(-130));
+
+// SOME: CONDITION
+console.log(movements.some((mov) => mov === -130));
+// And probably if I would have named this method,  I would have called it like any.  But of course, that's not the real name  but that's really what it does.  And so if there is any value  for which this condition is true,  then the some method will return true.
+
+const anyDeposits = movements.some((mov) => mov > 0);
+console.log(anyDeposits);
+
+//////////////////// The Every Method
+
+// EVERY: CONDITION
+
+console.log(movements.every((mov) => mov > 0)); // false
+console.log(account4.movements.every((mov) => mov > 0)); //true
+// So again, the every method is pretty similar  to the some method  but as you might guess, the difference between them  is that every only returns true  if all of the elements in the array satisfy the condition  that we pass in.
+
+// Separate callback
+const deposit = (mov) => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+
+//////////////// The flat Method
+// So  removed the nested arrays and flattened the array, which is why the method is called flat.
+// and no callback function this time.
+
+const nestedArr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(nestedArr.flat());
+
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat(1)); // default
+console.log(arrDeep.flat(2));
+// but we can go two levels deep. And so now we get the same result as before. And that's because it now goes, even into the second level of nesting and also takes the element out of depth array.
+
+// So let's say that the bank itself, wants to calculate the overall balance of all the movements of all the accounts.
+// const accountMovements = accounts.map((acc) => acc.movements);
+// console.log(accountMovements);
+// const allMovements = accountMovements.flat();
+// console.log(allMovements);
+// const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+// console.log(overallBalance);
+
+// using optional chaining
+const overallBalance = accounts
+  .map((acc) => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance);
+
+///////////////// The flatMap Method
+
+const overallBalance2 = accounts
+  .flatMap((acc) => acc.movements) //And since flat map also does mapping, it needs to receive exactly the same callback   as a map method.   So this is essentially a map method   that all it does is, in the end,   it then flattens the result.
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance2);
+
+// Now just notice that, flat map here, only goes one level deep and we cannot change it. So if you do need to go deeper than just one level, you still need to use the flat method. So anyway, keep these two in mind. Whenever you find yourself in a situation
+
+// where you have nested the race  and need to work with them.  And believe me,  that happens more often than you think,  and I believe that,  even in the course of this course,  there is gonna be another situation.
+
+////////////////////// Sorting Arrays ///////////////////////////
+// Strings
+const owners = ["Jonas", "Zach", "Adam", "Martha"];
+console.log(owners.sort());
+console.log(owners);
+// you will see that it also now is mutated, okay? And so we have to be very careful with this method.
+
+// Numbers
+console.log(movements);
+console.log(movements.sort()); // does not work because
+// These numbers are not at all ordered in any way, are they? And the reason for this is that the sort method does the sorting based on strings, all right? So that might sound weird but that is just how it works by default. So basically, what it does is to convert everything
+// to strings and then it does the sorting itself. And if we look at the result as if they were strings, then the result actually makes sense. So the minus here you see always comes first, okay?
+// So first, you have all the minuses here and so that's basically alphabetically the first string that occurs. And then afterwards, you have this one, which starts with one before this four and then before the six.
+// So these three are alphabetically ordered if they were strings. And the same here. So you have one first, then two, then three, then four and then seven. So again, if they were strings, then this result would make sense.
+
+// movements.sort((a, b) => {}); // let's just think of a and b  as simply being two consecutive numbers in the array.
+// return < 0, A, B (keep order)
+// return > 0, B, A (switch order)
+// And so that is because basically the sort method keeps looping over the array and applying this callback function here until everything is in an ascending order according
+
+// Ascending
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+
+movements.sort((a, b) => a - b); //And by the way, if we return zero here, so in case these two values are the same, then their position simply remains unchanged.
+console.log(movements);
+
+// Descending
+// movements.sort((a, b) => {
+//   if (a > b) return -1;
+//   if (a < b) return 1;
+// });
+movements.sort((a, b) => b - a);
+console.log(movements);
+
+// Now, if you have a mixed array, like with strings and numbers together, then this is not gonna work and I advise you to simply not to use the sort method in these cases anyway. And that's because there's not really a point in doing so.
+
+///////////////// More Ways of Creating and Filling Arrays ///////////////////
+// normally
+const arrs = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+////////// Empty arrays + fill method
+const x = new Array(7);
+console.log(x);
+//this weird behavior of this Array() function  which does it so that whenever we only pass in one argument,  then it creates a new empty argument with that length.  So if we don't know about this special particularity  of the Array() constructor function  then this can lead to weird errors.
+console.log(x.map(() => 5)); // this wont work only the fill methods work
+
+x.fill(1); // this mutates the entire array
+// Because this method is actually a little bit similar to the slice() method. So besides this value that we want to fill the array with, we can also specify where we want it to start to fill.
+console.log(x);
+
+x.fill(1, 3, 5); // number, indexstartpoint, indexendpoint(stops at num before)
+console.log(x);
+
+arr.fill(23, 2, 6);
+console.log(arr);
+
+//////////// Array.from
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+
+// Now, this Array.from() function was initially introduced into JavaScript in order to create arrays from array like structures. So remember how I talked about so-called Iterables before, so things like Strings, Maps or Sets,
+
+// they are all Iterables in JavaScript.  And so they can be converted to real arrays  using Array.from().  And that's the reason also for the name of the function,  because we can create arrays from other things.
+const z = Array.from({ length: 7 }, (_, i) => i + 1); // mapping => second parameter
+console.log(z);
+
+////////////////////   ARRAY METHODS IN PRACTICE /////////////////////////////
+
+// 1)
+const bankDepositsSum = accounts
+  // .map((accs) => accs.movements)
+  // .flat() //REPLACED WITH
+  .flatMap((accs) => accs.movements)
+  .filter((mov) => mov > 0)
+  .reduce((sum, curr) => sum + curr, 0);
+console.log(bankDepositsSum);
+
+// 2)
+// EASIER
+// const numDeposits1000 = accounts
+//   .flatMap((accs) => accs.movements)
+//   .filter((mov) => mov >= 1000).length;
+
+// console.log(numDeposits1000);
+
+// MORE COMPLEX
+const numDeposits1000 = accounts
+  .flatMap((accs) => accs.movements)
+  // .reduce((count, curr) => (curr >= 1000 ? count + 1 : count), 0);
+  // .reduce((count, curr) => (curr >= 1000 ? count++ : count), 0); // dint work because
+  //   So the plus plus operator did its job here.  But the thing is that when we use it like this,  it will still return the all to value, which here was 10.  And so the same thing happened here.
+  //  So we did count plus plus  which then increased the value from zero to one.
+  // But the result of this expression here is still zero.  And so zero was returned here to the next iteration.
+  .reduce((count, curr) => (curr >= 1000 ? ++count : count), 0); // the fix
+console.log(numDeposits1000);
+
+// Prefixed ++ operator
+let a = 10;
+console.log(++a);
+console.log(a);
