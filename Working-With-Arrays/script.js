@@ -94,7 +94,7 @@ console.log(letters.join("\n"));
 // unshift, // responsible for ADDING from front
 
 // pop  // responsible for REMOVING from back
-// unshift, // responsible for REMOVING from back
+// shift, // responsible for REMOVING from back
 
 // indexOf
 // includes
@@ -151,6 +151,7 @@ movements.forEach(function (mov, i, arr) {
     // Math.abs() // it gives the absolute values
   }
 });
+// movements array
 // 0: function(200)
 // 1: function(450)
 // 2: function(400)
@@ -221,7 +222,7 @@ const movementsDescription = movements.map(
 );
 // So the, for each method creates side effects.
 
-// But now here with this map method,  all we did was to return each  of the strings from the callback.
+// But now here with this map method,  all we did was to return each of the strings from the callback.
 
 // And so basically they got added into a new array.  And then finally we logged that entire array  to the console and not the elements one by one.
 
@@ -280,7 +281,7 @@ const totalDepositsUSD = movements
     return mov * eurToUsd;
   })
   .reduce((acc, currMov) => acc + currMov, 0);
-// as a result you cant chain any method to reduce
+// as a result you cant chain any method to reduce beacuse it returns a value 
 console.log(totalDepositsUSD);
 
 // let me just give you a couple of remarks about chaining.
@@ -300,9 +301,8 @@ const firstWithdrawal = movements.find((mov) => mov < 0);
 console.log(movements);
 // but there are two fundamental differences.
 
-// First Filter returns all the elements  that match the condition while the Find method  only returns the first one and second
-
-// and even more important, the Filter method returns a new array while Find only returns the element itself and not an array, okay? So make sure that you understand this fundamental difference.
+// First Filter returns all the elements  that match the condition while the Find method  only returns the first one 
+// and second and even more important, the Filter method returns a new array while Find only returns the element itself and not an array, okay? So make sure that you understand this fundamental difference.
 console.log(firstWithdrawal);
 
 console.log(accounts);
@@ -486,3 +486,53 @@ console.log(numDeposits1000);
 let a = 10;
 console.log(++a);
 console.log(a);
+
+// 3)
+
+const reduceAsAnObject = accounts
+  .flatMap((accs) => accs.movements)
+  .reduce(
+    (sum, cur) => {
+      cur > 0 ? (sum.deposits += cur) : (sum.withdrawals += cur);
+      return sum;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+
+console.log(reduceAsAnObject);
+
+const { depositts, withdrawal } = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // cur > 0 ? (sums.depositts += cur) : (sums.withdrawal += cur);
+      sums[cur > 0 ? "depositts" : "withdrawal"] += cur;
+      return sums;
+    },
+    { depositts: 0, withdrawal: 0 }
+  );
+
+console.log(depositts, withdrawal);
+
+// 4)
+// this is a nice title -> This Is a Nice Title
+const convertTitleCase = function (title) {
+  const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+  const exceptions = ["a", "an", "and", "the", "but", "or", "on", "in", "with"];
+  const titleCase = title
+    .toLowerCase()
+    .split(" ")
+    // .map((word) => word[0].toUpperCase() + word.slice(1)); // check for the exceptions
+    // .map((word) =>
+    //   exceptions.includes(word)
+    //     ? word
+    //     : word[0].toUpperCase() + word.slice(1)
+    // ).join(" ");
+    // return titleCase;
+    .map((word) => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(" ");
+  return capitalize(titleCase);
+};
+console.log(convertTitleCase("this is a nice title"));
+console.log(convertTitleCase("this is a LONG title but not too long"));
+console.log(convertTitleCase("and here is another title with an EXAMPLE"));
