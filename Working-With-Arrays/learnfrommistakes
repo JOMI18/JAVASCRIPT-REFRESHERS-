@@ -1,0 +1,103 @@
+
+// 1.
+let JVer1;
+// const recommendedFoodPortion = function (dogsObjs) {
+//   dogsObjs.map((dog) => {
+//     dog.recommendedFood = dog.weight ** 0.75 * 28;
+//   });
+//   return dogsObjs;
+// };
+// console.log(recommendedFoodPortion(dogs)); //  NOT MEANT TO CREATE A NEW ARRAY
+
+// let recommendedFood;
+
+const recommendedFoodPortion = function (dogsObjs) {
+  dogsObjs.forEach(
+    (dogs) => (dogs.recommendedFood = Math.trunc(dogs.weight ** 0.75 * 28))
+  );
+  return dogsObjs;
+};
+console.log(recommendedFoodPortion(dogs));
+
+// 2.
+JVer1;
+// const dogSarah = function (dog) {
+//   dog.forEach((dogs) => {
+//     // console.log(dogs.owners);
+//     dogs.owners.forEach((owner) => {
+//       let sarah = owner === "Sarah" ? owner : "";
+//       console.log(sarah);
+//       if (sarah) {
+//         log
+//         console.log(
+//           dog.curFood > dog.recommendedFood
+//             ? `${sarah}'s dog eats too much`
+//             : `${sarah}'s dog doesn't eat enough `
+//         );
+//       }
+
+//     });
+//   });
+// };
+// console.log(dogSarah(dogs)); // UNNECESSARY
+
+let Version1;
+// const dogSarah = dogs.find((dog) => dog.owners.includes("Sarah"));
+// // const food =
+// //   dogSarah.curFood > dogSarah.recommendedFood
+// //     ? `The dog eats too much`
+// //     : `The dog doesn't eat enough `;
+
+// console.log(
+//   `Sarah's dog is eating too ${
+//     dogSarah.curFood > dogSarah.recFood ? "much" : "little"
+//   } `
+// );
+// console.log(dogSarah);
+// console.log(food);
+
+let Version2;
+const dogSarah = function (dog) {
+  let s;
+  const sarahObj = dog.find((dogs) => dogs.owners.includes("Sarah"));
+  sarahObj.owners.forEach((owner) => {
+    // console.log(owner);
+    if (owner === "Sarah") {
+      s = owner;
+      console.log(s);
+    }
+  });
+  const food =
+    sarahObj.curFood > sarahObj.recommendedFood
+      ? `${s}'s dog eats too much`
+      : `${s}'s dog doesn't eat enough `;
+  console.log(food);
+
+  return sarahObj;
+};
+console.log(dogSarah(dogs));
+
+// 3.
+let ownersEatTooMuch = [];
+let ownersEatTooLittle = [];
+const dogsQuantity = function (dog) {
+  const quantity = dog.forEach((dogs) => {
+    if (dogs.curFood > dogs.recommendedFood) {
+      console.log("The dog eats too much");
+      ownersEatTooMuch.push(dogs);
+      console.log(ownersEatTooMuch);
+    } else if (dogs.curFood < dogs.recommendedFood) {
+      console.log("The dog doesn't eat enough ");
+      ownersEatTooLittle.push(dogs);
+      console.log(ownersEatTooLittle);
+    }
+  });
+  return quantity;
+};
+dogsQuantity(dogs);
+
+// Random dice rolls
+// const dice = Array.from({ length: 100 }, (_, i) =>
+//   // Math.trunc(Math.random() *1)
+// );
+// console.log(dice);
