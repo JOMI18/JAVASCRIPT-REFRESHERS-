@@ -68,6 +68,12 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+
+///////////////////////////////////
+///////////////////////////////////
+// Working with Functions
+
+
 ///////////////////////// Creating DOM Elements ////////////////////////////////
 
 const displayMovements = function (movements, sort = false) {
@@ -238,13 +244,19 @@ const calcDisplaySummary = function (acc) {
 
 // calcDisplaySummary(account1.movements);
 
-//////////////////////////////// Implementing the Find Method and Working with Event Handlers ///////////////////////////////////////
-
 const updateUI = function (account) {
   displayMovements(account.movements);
   calcDisplayedBalance(account);
   calcDisplaySummary(account);
 };
+
+
+///////////////////////////////////
+///////////////////////////////////
+// Working with Event Handlers 
+
+//////////////////////////////// Implementing the Find Method ///////////////////////////////////////
+
 
 let currentAccount;
 btnLogin.addEventListener("click", function (e) {
