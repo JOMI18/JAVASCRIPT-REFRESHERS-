@@ -10,6 +10,19 @@ const account1 = {
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
+
+  movementsDates: [
+    "2019-11-18T21:31:17.178Z",
+    "2019-12-23T07:42:02.383Z",
+    "2020-01-28T09:15:04.904Z",
+    "2020-04-01T10:17:24.185Z",
+    "2020-05-08T14:11:59.604Z",
+    "2020-05-27T17:01:17.194Z",
+    "2020-07-11T23:36:17.929Z",
+    "2020-07-12T10:51:36.790Z",
+  ],
+  currency: "EUR",
+  locale: "pt-PT", // de-DE
 };
 
 const account2 = {
@@ -17,6 +30,19 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
+
+  movementsDates: [
+    "2019-11-18T21:31:17.178Z",
+    "2019-12-23T07:42:02.383Z",
+    "2020-01-28T09:15:04.904Z",
+    "2020-04-01T10:17:24.185Z",
+    "2020-05-08T14:11:59.604Z",
+    "2020-05-27T17:01:17.194Z",
+    "2020-07-11T23:36:17.929Z",
+    "2020-07-12T10:51:36.790Z",
+  ],
+  currency: "EUR",
+  locale: "pt-PT", // de-DE
 };
 
 const account3 = {
@@ -24,6 +50,18 @@ const account3 = {
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
   pin: 3333,
+  movementsDates: [
+    "2019-11-01T13:15:33.035Z",
+    "2019-11-30T09:48:16.867Z",
+    "2019-12-25T06:04:23.907Z",
+    "2020-01-25T14:18:46.235Z",
+    "2020-02-05T16:33:06.386Z",
+    "2020-04-10T14:43:26.374Z",
+    "2020-06-25T18:49:59.371Z",
+    "2020-07-26T12:01:20.894Z",
+  ],
+  currency: "USD",
+  locale: "en-US",
 };
 
 const account4 = {
@@ -31,6 +69,19 @@ const account4 = {
   movements: [430, 1000, 700, 50, 90],
   interestRate: 1,
   pin: 4444,
+
+  movementsDates: [
+    "2019-11-18T21:31:17.178Z",
+    "2019-12-23T07:42:02.383Z",
+    "2020-01-28T09:15:04.904Z",
+    "2020-04-01T10:17:24.185Z",
+    "2020-05-08T14:11:59.604Z",
+    "2020-05-27T17:01:17.194Z",
+    "2020-07-11T23:36:17.929Z",
+    "2020-07-12T10:51:36.790Z",
+  ],
+  currency: "EUR",
+  locale: "pt-PT", // de-DE
 };
 
 const account5 = {
@@ -38,6 +89,18 @@ const account5 = {
   movements: [10000, 250, -100, 5000, -50, 1300, 70, 1900],
   interestRate: 2, // %
   pin: 1234,
+  movementsDates: [
+    "2019-11-01T13:15:33.035Z",
+    "2019-11-30T09:48:16.867Z",
+    "2019-12-25T06:04:23.907Z",
+    "2020-01-25T14:18:46.235Z",
+    "2020-02-05T16:33:06.386Z",
+    "2020-04-10T14:43:26.374Z",
+    "2020-06-25T18:49:59.371Z",
+    "2020-07-26T12:01:20.894Z",
+  ],
+  currency: "USD",
+  locale: "en-US",
 };
 
 const accounts = [account1, account2, account3, account4, account5];
@@ -68,31 +131,66 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
-
 ///////////////////////////////////
 ///////////////////////////////////
 // Working with Functions
 
-
 ///////////////////////// Creating DOM Elements ////////////////////////////////
 
-const displayMovements = function (movements, sort = false) {
+// const displayMovements = function (movements, sort = false) {
+//   containerMovements.innerHTML = "";
+
+//   const movOrder = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+//   // movements.forEach(function (mov, i) {
+//   movOrder.forEach(function (mov, i) {
+//     const type = mov > 0 ? "deposit" : "withdrawal";
+
+//     const html = `
+//     <div class="movements__row">
+//           <div class="movements__type movements__type--${type}">${
+//       i + 1
+//     }  ${type}</div>
+//           <div class="movements__value">${mov.toFixed(2)}€</div>
+//         </div>
+//     `;
+//     containerMovements.insertAdjacentHTML("afterbegin", html);
+
+//   });
+// };
+
+// wee need to have access to the enter accounts
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = ""; // Now innerHTML here is a little bit similar to text content.
   // .textContent=0
-  //  So remember that now the difference is that textcontent simply returns the text itself while innerHTML returns everything, including the HTML. So all the HTML tags will be included.
+  //  So remember that now the difference is that textcontent simply returns the text itself while innerHTML returns everything, including the HTML.
+  // So all the HTML tags will be included.
 
-  const movOrder = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movOrder = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
   // create a copy of the array don't sort directly
 
   // movements.forEach(function (mov, i) {
   movOrder.forEach(function (mov, i) {
     const type = mov > 0 ? "deposit" : "withdrawal";
+
+    // looping 2 arrays at the same time
+    //  we are looping over the movements. And so at the same time, basically we also need to loop over the movement dates, okay. But that's not a problem because
+    // we already have the index here. And so what we can do is to write account or acc.movementsDates and then we take it at position i.
+    // So that is the current index in the movements array. And the same index is then gonna point to the equivalent date in this movements date array.
+    const date = new Date(acc.movementsDates[i]);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const year = date.getFullYear();
+    const displayDate = `${day}/${month}/${year}`;
     const html = `
     <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       i + 1
     }  ${type}</div>
-          <div class="movements__value">${mov}€</div>
+    <div class="movements__date">${displayDate}</div>
+          <div class="movements__value">${mov.toFixed(2)}€</div>
         </div>
     `;
 
@@ -103,7 +201,8 @@ const displayMovements = function (movements, sort = false) {
     // The first string is the position  in which we want to attach the HTML.
     // because now we need to specify the second argument and that is the string containing the HTML
 
-    // And finally, I wanted to show you why I used afterbegin and not beforeend. Well, let me show you what happened with beforeend. I think this is how it works. So beforeend. Yeah. So with that, the order of the movements would be inverted.
+    // And finally, I wanted to show you why I used afterbegin and not beforeend. Well, let me show you what happened with beforeend. I think this is how it works.
+    // So beforeend. Yeah. So with that, the order of the movements would be inverted.
   });
 };
 
@@ -113,7 +212,9 @@ const displayMovements = function (movements, sort = false) {
 
 // Thought Process
 // And so how do we take each of the first letters here? Well, we could simply loop over the array, and then take the first letter in each iteration,
-// and add them into a new array. And then in the end, we would join that array,  and we would end up with just a string of stw.  So let's do what I just said.  So looping over this array,  taking the first letter and then putting it  into a new array.  And that is exactly what the map method does.  We can do that directly here,
+// and add them into a new array. And then in the end, we would join that array,  and we would end up with just a string of stw.
+//  So let's do what I just said.  So looping over this array,  taking the first letter and then putting it  into a new array.
+// And that is exactly what the map method does.  We can do that directly here,
 
 // const user = "Steven Thomas Williams"; // stw
 
@@ -140,8 +241,10 @@ const displayMovements = function (movements, sort = false) {
 // 6. Take to function based
 
 const createUsernames = function (usersAcc) {
-  // But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or the for each method.
-  // Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array. So in this array here, and so what we want is to simply loop over // this array here, and then do something.
+  // But now we actually want to compute  one username for each of the account holders  in our accounts array.  So to do that, should we use the map  or
+  // the for each method.
+  // Well, we do not want to create a new array in this situation, all we want to do is to modify the object, so the elements that already exist in the accounts array.
+  //  So in this array here, and so what we want is to simply loop over // this array here, and then do something.
 
   usersAcc.forEach((acc) => {
     acc.username = acc.owner
@@ -173,7 +276,7 @@ const calcDisplayedBalance = function (acc) {
     return accum + curMov;
   }, 0);
   acc.balance = balance; // or you can set it directly
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 
   // acc.balance = acc.movements.reduce(function (accum, curMov) {
   //   return accum + curMov;
@@ -214,7 +317,8 @@ const calcDisplayedBalance = function (acc) {
 //   labelSumInterest.textContent = `${interest}€`;
 // };
 
-// And so, in order to get access to that data,  so to that interest rate,  we now need more than just the movements.  Instead of the movements, we want now, the entire account.  Because then we can take the movements from the account,  and also the interest rate.
+// And so, in order to get access to that data,  so to that interest rate,  we now need more than just the movements.  Instead of the movements,
+// we want now, the entire account.  Because then we can take the movements from the account,  and also the interest rate.
 //  Alright, so again, we will now change this function  and pass in the entire account,  and not just the movements array.
 // And so then from there, we will be able to take  the movements that we need to calculate  these three statistics here.
 
@@ -222,43 +326,51 @@ const calcDisplaySummary = function (acc) {
   const income = acc.movements
     .filter((mov) => mov > 0)
     .reduce((accum, mov) => accum + mov, 0);
-  labelSumIn.textContent = `${income}€`;
+  labelSumIn.textContent = `${income.toFixed(2)}€`;
 
   const withdrawals = acc.movements
     .filter((mov) => mov < 0)
     .reduce((accum, mov) => accum + mov, 0);
-  labelSumOut.textContent = `${Math.abs(withdrawals)}€`;
+  labelSumOut.textContent = `${Math.abs(withdrawals.toFixed(2))}€`;
 
   const interest = acc.movements
     .filter((mov) => mov > 0)
     .map((deposits) => (deposits * acc.interestRate) / 100)
-    //  So right now, for all of the accounts, the interest rate is now calculated using this 1.2 interest rate. However, as we take a look at the accounts, each of them actually has a different interest rate.
-    // So this one has 1.2, but this one has 1.5, and this one has less, so it gets a less interest. And so now of course, we also want to dynamically use this interest rate depending on the current user, right?
+    //  So right now, for all of the accounts, the interest rate is now calculated using this 1.2 interest rate. However, as we take a look at the accounts,
+    // each of them actually has a different interest rate.
+    // So this one has 1.2, but this one has 1.5, and this one has less, so it gets a less interest. And so now of course, we also want to dynamically use
+    // this interest rate depending on the current user, right?
     .filter((deposits, i, arr) => {
       // console.log(arr);
       return deposits >= 1;
     })
     .reduce((accum, intr) => accum + intr, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 // calcDisplaySummary(account1.movements);
 
 const updateUI = function (account) {
-  displayMovements(account.movements);
+  // displayMovements(account.movements);
+  displayMovements(account);
   calcDisplayedBalance(account);
   calcDisplaySummary(account);
 };
 
-
 ///////////////////////////////////
 ///////////////////////////////////
-// Working with Event Handlers 
+// Working with Event Handlers
 
 //////////////////////////////// Implementing the Find Method ///////////////////////////////////////
 
-
 let currentAccount;
+
+////////////// Fake account Login
+currentAccount = account5;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+//////////////
+
 btnLogin.addEventListener("click", function (e) {
   // Prevent form from submitting, therefore reloading
   e.preventDefault();
@@ -286,6 +398,19 @@ btnLogin.addEventListener("click", function (e) {
     //  labelWelcome.textContent = `Welcome ${currentAccount.owner.split(" ")}` // adds a , between names, iff theres no space it separates every letter with a ,
     labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(" ")[0]}`;
 
+    ///////////////// ADDING DATES and time  ///////////////////
+    const now = new Date();
+    console.log(now);
+    // const day = now.getDay();
+    const day = `${now.getDate()}`.padStart(2, 0);
+    console.log(day);
+    // const month = now.getMonth()+1;
+    const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    const year = now.getFullYear();
+    // const hour = now.getHours();
+    const hour = `${now.getHours()}`.padStart(2, 0);
+    const min = `${now.getMinutes()}`.padStart(2, 0);
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
     containerApp.style.opacity = 100;
 
     // Clear input fields
@@ -336,6 +461,9 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
 
+    // Adding the transfer date
+    currentAccount.movementsDates.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
     // Updating the Ui
 
     updateUI(currentAccount);
@@ -354,14 +482,19 @@ btnClose.addEventListener("click", function (e) {
     console.log("Can delete");
     const index = accounts.findIndex(
       //  Now, there's just a couple of things I want you to note here, both the find and findIndex methods
-      //  get access to also the current index, and the current entire array. So as always, besides the current element, these other two values are also available. But in practice, I never found these useful.
-      // And second, the both the find and findIndex methods  were added to JavaScript in ESX.  And so they will not work in like super old browsers.  But don't worry, there is going to be a lecture  a little bit later on how to support  all of these old browsers.
+      //  get access to also the current index, and the current entire array. So as always, besides the current element, these other two values are also available.
+      //  But in practice, I never found these useful.
+      // And second, the both the find and findIndex methods  were added to JavaScript in ESX.  And so they will not work in like super old browsers.
+      // But don't worry, there is going to be a lecture  a little bit later on how to support  all of these old browsers.
       (acc) => acc.username === currentAccount.username
     );
     // .indexOf
-    //  Now, you might notice that this is actually similar  to the indexOf method that we studied before.  So, indexOf,  and then here we can pass in some value, all right?  Now, the big difference here is that with indexOf,
-    //  we can only search for a value that is in the array.  So, if the array contains the 23, then it's true,  and if not, then it's false.  But on the other hand, with findIndex,  we can create a complex condition like this one,
-    // and of course, it doesn't have to be  the equality operator here.  It can be anything that returns true or false, okay?  And here we can simply check  if the array contains this value or not,  and if so, return the indexOf it.
+    //  Now, you might notice that this is actually similar  to the indexOf method that we studied before.  So, indexOf,  and then here we can pass in some value,
+    // all right?  Now, the big difference here is that with indexOf,
+    //  we can only search for a value that is in the array.  So, if the array contains the 23, then it's true,  and if not, then it's false.  But on the other hand,
+    // with findIndex,  we can create a complex condition like this one,
+    // and of course, it doesn't have to be  the equality operator here.  It can be anything that returns true or false, okay?  And here we can simply check
+    // if the array contains this value or not,  and if so, return the indexOf it.
     // So both return an index number,  but this one here is a lot simpler.
 
     // DELETE ACCOUNT
@@ -378,7 +511,11 @@ btnClose.addEventListener("click", function (e) {
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  // const amount = Number(inputLoanAmount.value);
+  // const amount = +inputLoanAmount.value;
+
+  // loan amounts are whole
+  const amount = Math.floor(inputLoanAmount.value);
 
   const requestedLoanValid = currentAccount.movements.some(
     (mov) => mov >= amount * 0.1
@@ -387,6 +524,8 @@ btnLoan.addEventListener("click", function (e) {
     // Add movement
     currentAccount.movements.push(amount);
 
+    // Adding the loan date
+    currentAccount.movementsDates.push(new Date().toISOString());
     // Update UI
     updateUI(currentAccount);
   }
@@ -398,25 +537,34 @@ btnLoan.addEventListener("click", function (e) {
 let sortedState = false; // monitoring the state
 btnSort.addEventListener("click", function (e) {
   e.preventDefault();
-  displayMovements(currentAccount.movements, !sortedState);
+  // displayMovements(currentAccount.movements, !sortedState);
+  displayMovements(currentAccount, !sortedState);
   sortedState = !sortedState;
 });
 
+////////////////////////////// Additional //////////////////////////////////
 
+// Now, besides these obvious Iterables that I just mentioned,  like Maps or Sets another great example  of an array like structure  is the result of using
+// querySelectorAll().
 
-////////////////////////////// //////////////////////////////////
+// So maybe you remember that querySelectorAll() returns,  something called a NodeList,  which is something like an array,  which contains all the selected
+// elements.  But it's not a real array,  and so it doesn't have methods like map(), for example.
 
-
-// Now, besides these obvious Iterables that I just mentioned,  like Maps or Sets another great example  of an array like structure  is the result of using querySelectorAll().
-
-// So maybe you remember that querySelectorAll() returns,  something called a NodeList,  which is something like an array,  which contains all the selected elements.  But it's not a real array,  and so it doesn't have methods like map(), for example.
-
-// But it's not a real array,  and so it doesn't have most of the array methods  like map() or reduce().  So if we actually wanted to use  a real array method like that on a NodeList,  we would first need to convert the NodeList to an array.
+// But it's not a real array,  and so it doesn't have most of the array methods  like map() or reduce().  So if we actually wanted to use  a real array method
+//  like that on a NodeList,  we would first need to convert the NodeList to an array.
 
 // And for that Array.from() is perfect.
 
-labelBalance.addEventListener("click", function () { //So we can attach a EventListeners to every object. It doesn't have to be a button.
-  
+labelBalance.addEventListener("click", function () {
+  // So again, let's pretend that we only have these values,  so all of these movements only stored here  in the user interface,  but we do not have them
+  //  somewhere in our code.  So we don't have an array containing these values.
+  // But now let's say we want to calculate their sum.  And so therefore we need to somehow get them first
+
+  // from the user interface and then do the calculation  based on that.  So let's create a variable called movementsUI.  So the ones that we get from
+  // the user interface.
+
+  //So we can attach a EventListeners to every object. It doesn't have to be a button.
+
   const movementsUI = Array.from(
     document.querySelectorAll(".movements__value"),
     (el) => Number(el.textContent.replace("€", ""))
@@ -424,13 +572,27 @@ labelBalance.addEventListener("click", function () { //So we can attach a EventL
   console.log(movementsUI);
 
   const movementsUI2 = [...document.querySelectorAll(".movements__value")]; // another way to get an array
+
+  ////////////////// Working with the remainders
+  [...document.querySelectorAll(".movements__row")].forEach(function (row, i) {
+    // 0, 2, 4, 6
+    if (i % 2 === 0) row.style.backgroundColor = "grey";
+    // 0, 3, 6, 9
+    // if (i % 3 === 0) row.style.backgroundColor = "blue";
+  });
 });
 
-// So again, let's pretend that we only have these values,  so all of these movements only stored here  in the user interface,  but we do not have them somewhere in our code.  So we don't have an array containing these values.
-// But now let's say we want to calculate their sum.  And so therefore we need to somehow get them first
+///////////////////////////////////////////////// ADDING DATES //////////////////////////////////
+const now = new Date();
+// const day = now.getDay();
+const day = `${now.getDay()}`.padStart(2, 0);
+// const month = now.getMonth()+1;
+const month = `${now.getMonth() + 1}`.padStart(2, 0);
+const year = now.getFullYear();
+// const hour = now.getHours();
+const hour = `${now.getHours()}`.padStart(2, 0);
+const min = now.getMinutes();
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
-// from the user interface and then do the calculation  based on that.  So let's create a variable called movementsUI.  So the ones that we get from the user interface.
-
-
-///////////////////////////////////////////////// /////////////////////////////////////////////////
+///////////////
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
