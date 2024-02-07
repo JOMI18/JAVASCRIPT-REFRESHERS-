@@ -95,9 +95,9 @@ const account5 = {
     "2019-12-25T06:04:23.907Z",
     "2020-01-25T14:18:46.235Z",
     "2020-02-05T16:33:06.386Z",
-    "2020-04-10T14:43:26.374Z",
-    "2020-06-25T18:49:59.371Z",
-    "2020-07-26T12:01:20.894Z",
+    "2024-01-27T14:43:26.374Z",
+    "2024-01-31T18:49:59.371Z",
+    "2024-02-02T12:01:20.894Z",
   ],
   currency: "USD",
   locale: "en-US",
@@ -137,6 +137,36 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 ///////////////////////// Creating DOM Elements ////////////////////////////////
 
+///////////////// Formatting the date appearance
+const formattedMovementDate = function (date, locale) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  console.log(daysPassed);
+  if (daysPassed === 0) {
+    return "Today";
+  } else if (daysPassed === 1) {
+    return "Yesterday";
+  } else if (daysPassed <= 7) {
+    return `${daysPassed} days ago`;
+  } else {
+    // const day = `${date.getDate()}`.padStart(2, 0);
+    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    // const year = date.getFullYear();
+    // return `${day}/${month}/${year}`;
+    return new Intl.DateTimeFormat(locale).format(date);
+  }
+};
+
+///////////////// Formatting the number appearance
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  }).format(value);
+};
+
 // const displayMovements = function (movements, sort = false) {
 //   containerMovements.innerHTML = "";
 
@@ -160,6 +190,7 @@ const inputClosePin = document.querySelector(".form__input--pin");
 // };
 
 // wee need to have access to the enter accounts
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = ""; // Now innerHTML here is a little bit similar to text content.
   // .textContent=0
@@ -179,20 +210,38 @@ const displayMovements = function (acc, sort = false) {
     //  we are looping over the movements. And so at the same time, basically we also need to loop over the movement dates, okay. But that's not a problem because
     // we already have the index here. And so what we can do is to write account or acc.movementsDates and then we take it at position i.
     // So that is the current index in the movements array. And the same index is then gonna point to the equivalent date in this movements date array.
+
     const date = new Date(acc.movementsDates[i]);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formattedMovementDate(date, acc.locale);
+
+    // const day = `${date.getDate()}`.padStart(2, 0);
+    // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    // const year = date.getFullYear();
+    // const displayDate = `${day}/${month}/${year}`;
+    // const calcDaysPassed = (date1, date2) =>
+    //   Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
+
+    //  take it to a func
+
+    // formatting number
+    // const formattedMov = new Intl.NumberFormat(acc.locale, {
+    //   style: "currency",
+    //   // currency: "USD",
+    //   currency: acc.currency,
+    // }).format(mov);
+
+    const formattedMov = formatCur(mov, acc.locale, acc.currency);
+
     const html = `
     <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       i + 1
     }  ${type}</div>
     <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${mov.toFixed(2)}€</div>
-        </div>
-    `;
+          <div class="movements__value">${formattedMov}</div>
+          </div>
+          `;
+    // <div class="movements__value">${mov.toFixed(2)}€</div>
 
     // So we need to attach this HTML somehow into this container -So into this movements element.
     // And to do that,we will use a method called insertAdjacentHTML.
@@ -276,7 +325,8 @@ const calcDisplayedBalance = function (acc) {
     return accum + curMov;
   }, 0);
   acc.balance = balance; // or you can set it directly
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  // labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 
   // acc.balance = acc.movements.reduce(function (accum, curMov) {
   //   return accum + curMov;
@@ -326,12 +376,18 @@ const calcDisplaySummary = function (acc) {
   const income = acc.movements
     .filter((mov) => mov > 0)
     .reduce((accum, mov) => accum + mov, 0);
-  labelSumIn.textContent = `${income.toFixed(2)}€`;
+  // labelSumIn.textContent = `${income.toFixed(2)}€`;
+  labelSumIn.textContent = formatCur(income, acc.locale, acc.currency);
 
   const withdrawals = acc.movements
     .filter((mov) => mov < 0)
     .reduce((accum, mov) => accum + mov, 0);
-  labelSumOut.textContent = `${Math.abs(withdrawals.toFixed(2))}€`;
+  // labelSumOut.textContent = `${Math.abs(withdrawals.toFixed(2))}€`;
+  labelSumOut.textContent = formatCur(
+    Math.abs(withdrawals),
+    acc.locale,
+    acc.currency
+  );
 
   const interest = acc.movements
     .filter((mov) => mov > 0)
@@ -345,7 +401,8 @@ const calcDisplaySummary = function (acc) {
       return deposits >= 1;
     })
     .reduce((accum, intr) => accum + intr, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  // labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
 // calcDisplaySummary(account1.movements);
@@ -363,12 +420,12 @@ const updateUI = function (account) {
 
 //////////////////////////////// Implementing the Find Method ///////////////////////////////////////
 
-let currentAccount;
+let currentAccount, timer;
 
 ////////////// Fake account Login
-currentAccount = account5;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account5;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 //////////////
 
 btnLogin.addEventListener("click", function (e) {
@@ -399,18 +456,34 @@ btnLogin.addEventListener("click", function (e) {
     labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(" ")[0]}`;
 
     ///////////////// ADDING DATES and time  ///////////////////
+    // const now = new Date();
+    // console.log(now);
+    // // const day = now.getDay();
+    // const day = `${now.getDate()}`.padStart(2, 0);
+    // console.log(day);
+    // // const month = now.getMonth()+1;
+    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    // const year = now.getFullYear();
+    // // const hour = now.getHours();
+    // const hour = `${now.getHours()}`.padStart(2, 0);
+    // const min = `${now.getMinutes()}`.padStart(2, 0);
+    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+
     const now = new Date();
-    console.log(now);
-    // const day = now.getDay();
-    const day = `${now.getDate()}`.padStart(2, 0);
-    console.log(day);
-    // const month = now.getMonth()+1;
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    // const hour = now.getHours();
-    const hour = `${now.getHours()}`.padStart(2, 0);
-    const min = `${now.getMinutes()}`.padStart(2, 0);
-    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+
+    const options = {
+      hour: "numeric",
+      minute: "numeric",
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    };
+
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
+
     containerApp.style.opacity = 100;
 
     // Clear input fields
@@ -427,6 +500,13 @@ btnLogin.addEventListener("click", function (e) {
     // // Display summary
     // // calcDisplaySummary(currentAccount.movements);
     // calcDisplaySummary(currentAccount);
+
+    // start timer
+    // startLogOutTimerTestRun()
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = startLogOutTimer();
 
     // Updating the Ui
 
@@ -467,6 +547,10 @@ btnTransfer.addEventListener("click", function (e) {
     // Updating the Ui
 
     updateUI(currentAccount);
+
+    // Reset timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -521,13 +605,19 @@ btnLoan.addEventListener("click", function (e) {
     (mov) => mov >= amount * 0.1
   );
   if (amount > 0 && requestedLoanValid) {
-    // Add movement
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      // Add movement
+      currentAccount.movements.push(amount);
 
-    // Adding the loan date
-    currentAccount.movementsDates.push(new Date().toISOString());
-    // Update UI
-    updateUI(currentAccount);
+      // Adding the loan date
+      currentAccount.movementsDates.push(new Date().toISOString());
+      // Update UI
+      updateUI(currentAccount);
+
+      // Reset timer
+      clearInterval(timer);
+      timer = startLogOutTimer();
+    }, 5000);
   }
   inputLoanAmount.value = "";
 });
@@ -583,16 +673,76 @@ labelBalance.addEventListener("click", function () {
 });
 
 ///////////////////////////////////////////////// ADDING DATES //////////////////////////////////
-const now = new Date();
-// const day = now.getDay();
-const day = `${now.getDay()}`.padStart(2, 0);
-// const month = now.getMonth()+1;
-const month = `${now.getMonth() + 1}`.padStart(2, 0);
-const year = now.getFullYear();
-// const hour = now.getHours();
-const hour = `${now.getHours()}`.padStart(2, 0);
-const min = now.getMinutes();
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+// const now = new Date();
+// // const day = now.getDay();
+// const day = `${now.getDay()}`.padStart(2, 0);
+// // const month = now.getMonth()+1;
+// const month = `${now.getMonth() + 1}`.padStart(2, 0);
+// const year = now.getFullYear();
+// // const hour = now.getHours();
+// const hour = `${now.getHours()}`.padStart(2, 0);
+// const min = now.getMinutes();
+// labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
-///////////////
+// works with the fake entry
+
+/////////////// experimenting with API
+// const now = new Date();
+// const options = {
+//   hour: "numeric",
+//   minute: "numeric",
+//   day: "numeric",
+//   month: "numeric",
+//   year: "numeric",
+//   // weekday: 'long',
+// };
+// labelDate.textContent = new Intl.DateTimeFormat("en-US", options).format(now);
+
 ///////////////////////////////////////////////// /////////////////////////////////////////////////
+// Now for security reasons, real bank applications
+
+// will log out users after some inactive time.
+
+// For example, after five minutes without doing anything.
+
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    // In each call, print the remaining time to UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // When 0 seconds, stop timer and log out user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = "Log in to get started";
+      containerApp.style.opacity = 0;
+    }
+
+    // Decrease 1s
+    time--; // And so in this iteration where the time is initially one, -- it solves it not reaching 0
+
+    // this part of the code still gets executed. And again, because we increase that one second to zero here, before this. And so we need to put it after, of course.
+
+    // And so now this part of the code here only gets triggered if the time really is zero here in this whole function. So now you will see that the logout will only really happen after exactly 10 seconds.
+  };
+
+  // Set time to 5 minutes
+  let time = 120;
+
+  // Call the timer every second
+  tick(); // So this callback function that we passed into set interval is not called immediately. -- this solves it
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+
+// const startLogOutTimerTestRun = function () {
+//   let timer = 100;
+
+//   setInterval(() => {
+//     labelTimer.textContent = timer;
+//     timer--;
+//   }, 1000);
+// };

@@ -1,6 +1,4 @@
-"use strict";
-
-/////////////////////////////////////////////////
+"use strict"; ///////////////////////////////////////////////
 // Data
 
 // DIFFERENT DATA! Contains movement dates, currency and locale
@@ -317,17 +315,109 @@ console.log(Date.now());
 future.setFullYear(2040);
 console.log(future);
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
+/////////////////////// Operations With Dates //////////////////////////
+
+///////////////////////////////////////
+//
+const fut = new Date(2037, 10, 19, 15, 23);
+console.log(+fut);
+// Now if you need really pretty sighs calculations, for example, including time changes due to daylight saving changes, and other weird edge cases like that,
+// then you should use a date library like moment dot js.  And that's a library  that's available for free for all JavaScript developers.
+
+const calcDaysPassed = (date1, date2) =>
+  // Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
+  Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24)); // hours and mins are included
+
+// const days1 = calcDaysPassed(new Date(2037, 3, 4), new Date(2037, 3, 14));
+const days1 = calcDaysPassed(
+  new Date(2037, 3, 4),
+  new Date(2037, 3, 14, 10, 8)
+);
+console.log(days1);
+
+////////////////////// Internationalizing Dates (Intl) ///////////////////////////
+
+// const now = new Date();
+
+const options = {
+  hour: "numeric",
+  minute: "numeric",
+  day: "numeric",
+  month: "numeric",
+  // month: "long",
+  // month: "2-digit",
+  year: "numeric",
+  // year: "2-digit",
+  // year: "long",
+  // weekday: 'long',
+  // weekday: 'narrow',
+};
+
+// better to get the locale from the users browser
+const locale = navigator.language;
+console.log(locale);
+
+console.log(new Intl.DateTimeFormat("en-US", options).format(now));
+console.log(new Intl.DateTimeFormat(locale, options).format(now));
+console.log(new Intl.DateTimeFormat("en-US").format(now));
+console.log(new Intl.DateTimeFormat("en-GB").format(now));
+console.log(new Intl.DateTimeFormat("ar-SY").format(now));
+
+// And to get these different codes,  let's just Google ISO language code table.  And then the one that's easiest to understand  is this one here.  So go to the one that has lingos.net,
+//  and then from there you can find your own code  and then experiment with that
+
+////////////////////  Internationalizing Numbers (Intl) /////////////////////////////
+const nums = 3884764.23;
+
+const option = {
+  // style: "unit", if unit isnt used here it ignores the unit property
+  style: "currency",
+  // style: "percent",
+  unit: "celsius",
+  // unit: "miles-per-hour",
+  currency: "EUR", // you have to set currency--- its not determined by the locale
+  // useGrouping: false,
+};
+
+console.log("US:      ", new Intl.NumberFormat("en-US").format(nums));
+console.log("US:      ", new Intl.NumberFormat("en-US", option).format(nums));
+console.log("Germany: ", new Intl.NumberFormat("de-DE", option).format(nums));
+console.log("Syria:   ", new Intl.NumberFormat("ar-SY", option).format(nums));
+console.log(
+  navigator.language,
+  new Intl.NumberFormat(navigator.language, options).format(num)
+);
+
+//////////////////////  Timers: setTimeout and setInterval  ///////////////////////////
+// First, the set timeout timer runs just once,  after a defined time, while the set interval timer  keeps running basically forever, until we stop it.
+// So basically, we can use set timeout to execute some code at some point in the future.
+
+// setTimeout
+console.log("TIMERSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+setTimeout(() => console.log("Here is your pizza 🍕"), 3000);
+
+const ingredients = ["olives", "spinach"];
+const pizzaTimer = setTimeout(
+  (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2} 🍕`),
+  3000,
+  ...ingredients
+);
+
+// And so with this,  we really delayed calling this function here, right?  Yeah, by exactly three seconds.  And we can also say that we schedule this function call
+//  for three seconds later, all right.
+console.log("Waiting...");
+
+//  Now, what's really important to realize here  is that the code execution does not stop here at this point.
+// All right, so when the execution of our code  reaches this point,
+// it will simply call  the set timeout function,  it will then essentially register  this callback function here to be called later.
+// And then the code execution simply continues.
+
+if (ingredients.includes("spinach")) clearTimeout(pizzaTimer);
+
+setInterval;
+setInterval(function () {
+  const now = new Date();
+  console.log(
+    `The time is ${now.getHours()} : ${now.getMinutes()} : ${now.getSeconds()}`
+  );
+}, 1000);
