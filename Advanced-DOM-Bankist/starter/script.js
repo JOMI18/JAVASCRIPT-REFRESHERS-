@@ -6,12 +6,19 @@ const btnCloseModal = document.querySelector(".btn--close-modal");
 const btnsOpenModal = document.querySelectorAll(".btn--show-modal"); // this becomes a node list not an array... there are  methods we can use still
 
 const header = document.querySelector(".header");
+const nav = document.querySelector(".nav");
 
 const allSections = document.querySelectorAll(".section");
 const allButtons = document.getElementsByTagName("button");
+const imgsTarget = document.querySelectorAll("img[data-src]");
 
 const btnScrollTo = document.querySelector(".btn--scroll-to");
 const section1 = document.querySelector("#section--1");
+
+const tabs = document.querySelectorAll(".operations__tab");
+const tabsContainer = document.querySelector(".operations__tab-container");
+const tabsContent = document.querySelectorAll(".operations__content");
+
 ///////////////////////////////////////
 // Modal window
 
@@ -39,6 +46,316 @@ document.addEventListener("keydown", function (e) {
     closeModal();
   }
 });
+
+///////////////////  Implementing Smooth Scrolling  ////////////////////
+
+///////////////////////////////////////
+// Button scrolling
+
+btnScrollTo.addEventListener(
+  "click",
+
+  function (e) {
+    const s1coords = section1.getBoundingClientRect(); //then we get to this DOM rectangle now, right? relative to the screen
+    console.log(s1coords);
+
+    //   So this BoundingClientRect is basically relative to this visible view port, all right?
+    console.log(e.target.getBoundingClientRect());
+
+    console.log("Current scroll (X/Y)", window.pageXOffset, window.pageYOffset);
+
+    console.log(
+      "height/width viewport",
+      document.documentElement.clientHeight,
+      document.documentElement.clientWidth
+    );
+
+    // Scrolling
+    // window.scrollTo(
+    //   s1coords.left + window.pageXOffset,
+    //   s1coords.top + window.pageYOffset
+    // );
+
+    // window.scrollTo({
+    //   left: s1coords.left + window.pageXOffset,
+    //   top: s1coords.top + window.pageYOffset,
+    //   behavior: 'smooth',
+    // });
+
+    section1.scrollIntoView({ behavior: "smooth" });
+  }
+);
+
+///////////////////////////////////////
+// Page Navigation
+
+// document.querySelectorAll(".nav__link").forEach(function (el) {
+//   el.addEventListener("click", function (e) {
+//     e.preventDefault(); // prevent its automatic moving to the anchored place
+//     const id = this.getAttribute("href");
+//     console.log(id); // you can use query selector because at the end of the day it has a format of id selector
+//     document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+//   });
+// });
+
+// this isnt effective because in a case of 1000 CompressionStream, we would essentially be creating 1000 copies
+// a better soln will be event delegation
+
+// 1. Add event listener to common parent element
+// 2. Determine what element originated the event
+
+document.querySelector(".nav__links").addEventListener("click", function (e) {
+  console.log(e.target);
+  e.preventDefault();
+
+  // Matching strategy
+  if (e.target.classList.contains("nav__link")) {
+    const id = e.target.getAttribute("href");
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
+
+  // there is actually an even more important use case  of event delegation,  which is when we are working with elements  that are not yet on the page on runtime.
+  // So by the time the page loads. And a great example are buttons that are added dynamically while using the application. So it's not possible to add event handlers
+  // on two elements that do not exist,  but we will still be able to handle events  on elements that don't exist at the beginning  by using event delegation one more time.
+});
+
+///////////////////////////////////////
+// Tabbed component
+
+// we know that to add event listeners to the body it would be a bad practice to loop over them, hence event delegation {on the parent} would work
+tabsContainer.addEventListener("click", function (e) {
+  // const clicked = e.target // this is isn't the best way because it gets the element clicked {so if span, span, if button, button}
+  // const clicked = e.target.parentElement; // doesn't fully solve that issue because if the button is clicked then the parent element of the button is what is selected
+  const clicked = e.target.closest(".operations__tab"); // is the best option because it finds the closest parent to the tab;
+  console.log(clicked);
+
+  // Guard clause
+  if (!clicked) return;
+
+  // Remove active classes
+  tabs.forEach((t) => t.classList.remove("operations__tab--active"));
+  tabsContent.forEach((c) => c.classList.remove("operations__content--active"));
+
+  // Activate tab
+  clicked.classList.add("operations__tab--active");
+
+  // Activate content area
+  console.log(clicked.dataset.tab);
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add("operations__content--active");
+});
+
+///////////////////////////////////////
+// Passing Arguments to Event Handlers --> Menu fade animation
+
+const handleHover = function (e) {
+  if (e.target.classList.contains("nav__link")) {
+    // So, you see that this time around,  I'm not using the closest methods.  And that's because there are simply no child elements  that we could accidentally click here
+    // in this link, right? So that was the reason why we needed the closest method here in this tabs because we had this button, but then we could also click on the span element.
+    // And so here we then needed to find the closest element.  So the closest button to both of these places, okay?  But here that's not necessary.
+    const link = e.target;
+
+    const siblings = link.closest(".nav").querySelectorAll(".nav__link"); // using it to search ==> querySelectorAll & querySelector
+    const logo = link.closest(".nav").querySelector("img");
+
+    siblings.forEach((el) => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// Passing "argument" into handler
+// js expects a function in its event handlers
+nav.addEventListener("mouseover", handleHover.bind(0.5));
+nav.addEventListener("mouseout", handleHover.bind(1));
+// and there are also kind of opposite events  of mouseover and mouseenter.  And we use these to basically undo
+// what we do on the hover. So the opposite of mouseenter is mouseleave, and the opposite of this mouseover is mouseout.
+
+///////////////////////////////////////
+// Implementing a Sticky Navigation: Using the Intersection OBserver API
+const navHeight = nav.getBoundingClientRect().height;
+console.log(navHeight);
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) {
+    nav.classList.add("sticky");
+  } else {
+    nav.classList.remove("sticky");
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+  // which is the rootMargin, okay?  And this root margin here, for example 90,  is a box of 90 pixels that will be applied  outside of our target element,
+  // so of our header here, okay? And so now it is as if the header did not stop right here, but instead, out here.
+});
+headerObserver.observe(header);
+
+///////////////////////////////////////
+// Revealing Sections on Scroll
+const revealSection = function (entries, obs) {
+  const [entry] = entries;
+  console.log(entry);
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove("section--hidden");
+  //   But we are observing all of the sections  here with this same observer here, right.  And so now we need a way of knowing,  which is the section that actually
+  // intersected the viewport.  And so that's what we can use the target [from the logged intersectingAPI] for.  And so let's do that.  So that's at entry dot target.
+
+  //   So you see, as we keep scrolling here,  more and more of these events,  keep getting added.  But in fact, they are actually no longer necessary,
+
+  // because we already did all the work that we wanted. And so we can now unobserve. And so there is again by doing observer, dot unobserve,
+  obs.unobserve(entry.target);
+};
+const sectionsObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+allSections.forEach((section) => {
+  sectionsObserver.observe(section);
+  section.classList.add("section--hidden");
+});
+
+///////////////////////////////////////
+// Implementing Lazy Loading Images
+
+// So that's a huge difference  and that image we then reference here  in this data-src attribute in the html.  So that's a special attribute that we can use,  but any other would work as well.
+// So this is not a standard HTML attribute  but instead it's one of these special data attributes
+// that we can do ourselves.  And so basically the idea is to...  As we scroll to one of these low resolution images  we will then replace this low resolution image  with the one that is here specified  in the data-src attribute.
+// And we then also are gonna remove this class here which has kind of this filter, which makes this image blurred because without this filter,
+
+// So lazy loading images and so once again,  this one is really great for performance  while the other things we did so far are more visual things.  This one really impacts how your site works and especially
+// for your users who might have a slow internet connection
+// or a low data plan or a slow cell phone.  And we always have to think about these users as well.  Not everyone has a super high end computer  or the latest phone.
+
+const loadingImg = function (entries, obs) {
+  const [entry] = entries;
+  console.log(entry);
+
+  if (!entry.isIntersecting) return;
+
+  // replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // because the image switching occurs behind the scenes, its a good idea to remove it this way
+  entry.target.addEventListener("load", function () {
+    entry.target.classList.remove("lazy-img");
+  });
+  obs.unobserve(entry.target);
+};
+const imgsObserver = new IntersectionObserver(loadingImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: "200px",
+});
+imgsTarget.forEach((img) => {
+  imgsObserver.observe(img);
+});
+
+///////////////////////////////////////
+// Slider
+
+// const sliders = document.querySelector(".slider");
+// sliders.style.transform = "Scale(0.4) translateX(-800px)";
+// sliders.style.overflow="visible"
+
+const slider = function () {
+  const slides = document.querySelectorAll(".slide");
+  const btnLeft = document.querySelector(".slider__btn--left");
+  const btnRight = document.querySelector(".slider__btn--right");
+  const dotContainer = document.querySelector(".dots");
+
+  let curSlide = 0;
+  const maxSlide = slides.length;
+
+  // Functions
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        "beforeend",
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  const activateDot = function (slide) {
+    document
+      .querySelectorAll(".dots__dot")
+      .forEach((dot) => dot.classList.remove("dots__dot--active"));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add("dots__dot--active");
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  // Next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) {
+      curSlide = maxSlide - 1;
+    } else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const init = function () {
+    goToSlide(0);
+    createDots();
+
+    activateDot(0);
+  };
+  init();
+
+  // Event handlers
+  btnRight.addEventListener("click", nextSlide);
+  btnLeft.addEventListener("click", prevSlide);
+
+  document.addEventListener("keydown", function (e) {
+    console.log(e);
+    if (e.key === "ArrowLeft") prevSlide();
+    e.key === "ArrowRight" && nextSlide();
+  });
+
+  dotContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("dots__dot")) {
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+};
+slider();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////
+///////////////////////////////////////
+///////////////////////////////////////
+// LECTURES
 
 //////////////////    Selecting, Creating, and Deleting Elements  /////////////////////
 
@@ -134,39 +451,41 @@ message.style.height =
 ///////////////////////////////////////
 // Attributes;
 
-const logo = document.querySelector(".nav__logo");
-console.log(logo.alt);
-console.log(logo.className); // classname not class
+// const logo = document.querySelector(".nav__logo");
+// console.log(logo.alt);
+// console.log(logo.className); // classname not class
 
-// Setting the attribute
-logo.alt = "Beautiful minimalist logo";
+// // Setting the attribute
+// logo.alt = "Beautiful minimalist logo";
 
 // Non-standard
-console.log(logo.designer); // so you can get it like you would an inbuilt element
+// console.log(logo.designer); // so you can get it like you would an inbuilt element
 
-console.log(logo.getAttribute("designer"));
-logo.setAttribute("company", "Bankist");
+// console.log(logo.getAttribute("designer"));
+// logo.setAttribute("company", "Bankist");
 
-console.log(logo.src); // this gives the http
-console.log(logo.getAttribute("src")); // to get the relative to the folders
+// console.log(logo.src); // this gives the http
+// console.log(logo.getAttribute("src")); // to get the relative to the folders
 
-const link = document.querySelector(".nav__link--btn");
-console.log(link.href);
-console.log(link.getAttribute("href"));
+// const link = document.querySelector(".nav__link--btn");
+// console.log(link.href);
+// console.log(link.getAttribute("href"));
 
 //  Data Attributes
 // for if we need to store data in the ui { html code }
 
-console.log(logo.dataset.versionNumber);
+// console.log(logo.dataset.versionNumber);
 
+///////////////////////////////////////
 // Classes
-logo.classList.add("c", "j"); // to add multiple classnames
-logo.classList.remove("c", "j");
-logo.classList.toggle("c");
-logo.classList.contains("c"); // not includes
+// logo.classList.add("c", "j"); // to add multiple classnames
+// logo.classList.remove("c", "j");
+// logo.classList.toggle("c");
+// logo.classList.contains("c"); // not includes
 
 // Don't use
-logo.clasName = "jonas";
+// logo.className = "jonas";
+
 // because this will override all the existing classes  and also it allows us to only put one class  on any element, all right, so again, only one class
 
 // and it will override whatever is already there, while these four methods here make it really nice to work with the classes by simply allowing us
@@ -174,53 +493,14 @@ logo.clasName = "jonas";
 
 // without interfering with the classes that are already there.
 
-///////////////////  Implementing Smooth Scrolling  ////////////////////
-
-///////////////////////////////////////
-// Button scrolling
-btnScrollTo.addEventListener(
-  "click",
-
-  function (e) {
-    const s1coords = section1.getBoundingClientRect(); //then we get to this DOM rectangle now, right? relative to the screen
-    console.log(s1coords);
-
-    //   So this BoundingClientRect is basically relative to this visible view port, all right?
-    console.log(e.target.getBoundingClientRect());
-
-    console.log("Current scroll (X/Y)", window.pageXOffset, window.pageYOffset);
-
-    console.log(
-      "height/width viewport",
-      document.documentElement.clientHeight,
-      document.documentElement.clientWidth
-    );
-
-    // Scrolling
-    // window.scrollTo(
-    //   s1coords.left + window.pageXOffset,
-    //   s1coords.top + window.pageYOffset
-    // );
-
-    // window.scrollTo({
-    //   left: s1coords.left + window.pageXOffset,
-    //   top: s1coords.top + window.pageYOffset,
-    //   behavior: 'smooth',
-    // });
-
-    section1.scrollIntoView({ behavior: "smooth" });
-  }
-);
-
-///////////////////////////////////////
-// Types of Events and Event Handlers
+///////////////////////// Types of Events and Event Handlers ///////////////////////
 const h1 = document.querySelector("h1");
 
 const alertH1 = function (e) {
   alert("addEventListener: Great! You are reading the heading :D");
 
   // for the event to be handled once
-  h1.removeEventListener("mouseenter", alertH1);
+  h1.removeEventListener("mouseenter", alertH1); // also doesn't bubble
   // doesnt have to be here
 };
 
@@ -238,9 +518,9 @@ h1.addEventListener("mouseenter", alertH1); // mouseenter works like hover
 setTimeout(() => h1.removeEventListener("mouseenter", alertH1), 3000);
 
 // METHOD 2 -- OLD SCHOOL
-// h1.onmouseenter = function (e) {
-//   alert('onmouseenter: Great! You are reading the heading :D');
-// };
+h1.onmouseenter = function (e) {
+  alert("onmouseenter: Great! You are reading the heading :D");
+};
 
 // METHOD 3
 // On the html but don't do this
@@ -283,7 +563,7 @@ setTimeout(() => h1.removeEventListener("mouseenter", alertH1), 3000);
 // Event Propagation in Practice
 const randomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1) + min);
-  
+
 const randomColor = () =>
   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
 
@@ -305,3 +585,130 @@ const randomColor = () =>
 //   this.style.backgroundColor = randomColor();
 //   console.log("NAV", e.target, e.currentTarget);
 // },true); // true/false is the parameter for capturing the events--- its not so useful
+
+/////////////////////// Dom traversing  //////////////////////////
+
+// So Dom traversing is basically walking through the Dom. Which means that we can select an element based on another element. And this is very important
+// because sometimes we need to select elements  relative to a certain other element.  For example, a direct child or a direct parent element.  Or sometimes we don't even know the structure
+// of the Dom at runtime.  And in all these cases, we need Dom traversing.
+
+// GOING DOWNWARDS: CHILD
+
+console.log(h1.querySelectorAll(".highlight"));
+// So this here indeed selects all the elements with the highlight class that are children of the h1 element. and that would work no matter how deep these child elements would be inside of the h1 element.
+// Okay, and that's very important to notice.
+
+console.log(h1.childNodes); // to get direct children nodes
+console.log(h1.children); // to get direct children
+
+// h1.firstElementChild.style.color = "white";
+// h1.lastElementChild.style.color = "orangered";
+
+// GOING Upwards: PARENT
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+// So let's say that on the page, we had multiple headers  so multiple elements with a class of header,  but for some reason  we only wanted to find the one  that is a parent element of h1.
+// So of all h1 element here.  And so for that, we can use closest.  And so the closest method receives a query string  just like querySelector and querySelectorAll.
+
+// h1.closest(".header").style.background = "var(--gradient-secondary)";
+// h1.closest("h1").style.background = "var(--gradient-primary)"; // the element itself will be returned
+
+// So we can think of closest here  as basically being the opposite of querySelector.  So both receive a query string as an input  but querySelector, finds children,
+// no matter how deep in the Dom tree, while the closest method finds parents. And also no matter how far up in the Dom tree. All right, so very important method here to keep in mind,
+
+// Going sideways: siblings
+// we'll use more of the elements
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+// the nodes
+console.log(h1.previousSibling);
+console.log(h1.nextSibling);
+
+// to get all the siblings, go to the parents and get all the children inclusive of the h1
+console.log(h1.parentElement.children);
+
+// [...h1.parentElement.children].forEach(function (el) {
+//   if (el !== h1) el.style.transform = 'scale(0.5)';
+// });
+
+///////////////////////////////////////
+// Implementing a Sticky Navigation:
+
+// avoid
+//////////////////////  The Scroll Event ////////////////////
+// const initialCoords = section1.getBoundingClientRect();
+// console.log(initialCoords);
+
+// window.addEventListener("scroll", function () {
+//   console.log(window.scrollY);
+
+//   if (window.scrollY > initialCoords.top) nav.classList.add("sticky");
+//   else nav.classList.remove("sticky");
+// });
+
+/////////////////// Implementing a Sticky Navigation: Using the Intersection OBserver API ////////////////////
+// But what actually is the intersection observer API, and why is it so helpful? Well, this API allows our code to basically observe changes to the way that a certain target element
+// intersects another element, or the way  it intersects the viewport.
+
+const obsCallBack = function (entries, observer) {
+  // So this callback function here will get called each time that the observed element, so our target element here, is intersecting the root element at the threshold that we defined, okay?
+  entries.forEach((entry) => {
+    console.log(entry);
+  });
+};
+
+const obsObject = {
+  root: null, //And so the root will once again be null,  because we are again interested in the entire viewport,
+  // And this root is the element  that the target is intersecting.  So again, this here is the target,  and the root element will be the element that we want our target element to intersect.
+
+  // threshold: 0.1, //(So you can think of this threshold here  at the percentage that we want to have visible in our root  So in our viewport in this case, )
+  // And then second, we can define a threshold. Threshold, and this is basically the percentage  of intersection at which  the observer callback will be called,  so this callback here.  So again that's very confusing,
+
+  threshold: [0, 0.2],
+  // Now what I'm gonna do here is to now specify an array, so to specify different thresholds, and one of them is gonna be zero,
+  // and the other one 0.2, so that's 20%. So 0% here means that basically our callback will trigger each time that the target element moves completely out of the view,
+  // and also as soon as it enters the view, okay? And so that's because the callback function will be called when the threshold is passed when moving into the view and when moving out of the view,
+  // and this is really important to remember here.  On the other hand, if we specified one here,  like this, then that means that the callback  will only be called when 100% of the target  is actually visible in the viewport.
+};
+
+const observer = new IntersectionObserver(obsCallBack, obsObject);
+observer.observe(section1); // which is the target in this case
+
+////////////////////// DOM LIFE CYCLE ////////////////////
+// let's take a quick look at a couple of different events
+// that occur in the DOM during a webpage's life cycle.
+// And when we say lifecycle,  we mean right from the moment  that the page is first accessed, until the user leaves it.
+
+document.addEventListener("DOMContentLoaded", function (e) {
+  console.log("HTML parsed and DOM tree built!", e);
+});
+// Now, the first event that we need to talk about  is called DOM content loaded.  And this event is fired by the document  as soon as the HTML is completely parsed, which means that the HTML has been downloaded
+// and been converted to the DOM tree. Also, all scripts must be downloaded and execute. before the DOM content loaded event can happen.
+// And then name of the event is, as I mentioned, DOM content loaded. All right, now this event does actually not wait for images and other external resources to load.
+// Okay. So just HTML and JavaScript need to be loaded.
+
+// we want all our code only to be executed after the DOM is  ready.  Right?  So does that mean that we should wrap our entire code into  an event listener like this?  So with a function like this, well, actually, no,
+// we don't need to do that. And that's because we have to script tag, which is the one that imports or a JavaScript into the HTML, right. At the end of the body. So you see it is down here.
+// So basically it's the last thing that is going to be read in the HTML. And so basically the browser will only find or script when the rest of the HTML is already parsed anyway.
+
+window.addEventListener("load", function (e) {
+  console.log("Page fully loaded", e);
+});
+
+// next up there is also the load event and the load event is fired by the window. As soon as not only the HTML is parsed, but also all the images and external resources like CSS files are also loaded.
+// So basically when the complete page has finished loading is  when this event gets fired.
+
+window.addEventListener("beforeunload", function (e) {
+  e.preventDefault();
+  console.log(e);
+  e.returnValue = "";
+});
+// Now, finally, the last event that I want to show you is the before unload event, which also gets fired on window. So window.add event listener. And so that's before unload.
+// And this event here is created immediately before a user is about to leave a page. So for example, after clicking this close button here in the browser tab, so we can basically use this event to ask users if they are
+// 100% sure that they want to leave the page. Now in some browsers to make this work, we need to call prevent default here. In Chrome it's not necessary, but some browsers require it.
+
+// So the only time you should prompt the user,  if they really want to leave the page is for example,  when the user is leaving in the middle of filling out the  form, or like writing a blog post or something like that.
+
+// So a situation in which data could actually be lost by  accident.
