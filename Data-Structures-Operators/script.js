@@ -129,7 +129,8 @@ const restaurant = {
 
 //////////////////////Array destructuring////////////////////
 
-// So in other words destructuring is to break a complex data structure down into a smaller data structure like a variable. So for arrays we use destructuring to retrieve elements from the array and store them into variables in a very easy way.
+// So in other words destructuring is to break a complex data structure down into a smaller data structure like a variable.
+//  So for arrays we use destructuring to retrieve elements from the array and store them into variables in a very easy way.
 const arr = [2, 3, 4];
 const a = arr[0];
 const b = arr[1];
@@ -210,7 +211,7 @@ let h = 999;
 const obj = { d: 23, h: 4, f: 12 };
 // {a,b}=obj // this wont work, neither would a const or let because it had already been declared
 ({ d, h } = obj);
-console.log(d, b);
+console.log(d, h);
 
 const { fri } = openingHours;
 console.log(fri);
@@ -242,12 +243,14 @@ console.log(newMenu);
 
 // Shallow Copy of An Array
 const mainMenuCopy = { ...restaurant.mainMenu }; // just like object.assign({},"")
+console.log(mainMenuCopy);
 
 // Join 2 or More Arrays
 const FullMenu = [...restaurant.starterMenu, ...restaurant.mainMenu];
 
 console.log(FullMenu);
 
+// OBJECTS ARE NOT ITERABLES SO THEY CANT'T BE spread
 //  the spread operator works on all so-called iterables. Now what is an iterable? Well, there are different iterables in JavaScript.
 //  And we will talk about all of them by the end of the course, but for now, just know that iterables are things like all arrays, strings, maps, or sets, but not objects. So basically,
 // most of the built-in data structures in JavaScript are now iterables, but except objects.
@@ -311,7 +314,7 @@ const add = function (...numbers) {
   console.log(sum);
 };
 
-// rest is the opposite of array
+// rest is the opposite of SPREAD
 // rest takes multiple values and packs it into an array while spread does the opposite
 add(2, 3);
 add(5, 6, 3);
@@ -327,6 +330,21 @@ restaurant.orderPizza("onions");
 // So the spread operator is used where we would otherwise write values, separated by a comma. On the other hand the rest pattern is basically used where we would otherwise write variable names separated by commas.
 //  So, again the rest pattern can be used where we would write variable names, separated by commas and not values separated by commas. So it's a subtle distinction, but this is how you know when and where to use spread and rest.
 
+// The distinction lies in where you use them syntactically: spread for expanding and rest for collecting.
+
+// Spread Operator (...): The spread operator is used to expand elements of an iterable (such as an array) into individual elements. It is typically used in places where you would otherwise write values separated by commas. For example, you can use the spread operator to concatenate arrays or create copies of arrays with additional elements.
+const array1 = [1, 2, 3];
+const array2 = [4, 5, 6];
+const combinedArray = [...array1, ...array2]; // Combines elements of array1 and array2
+
+// Rest Parameter: The rest parameter, often denoted by ...variableName, allows a function to accept an indefinite number of arguments as an array. It is used in function parameter lists and collects all remaining arguments into an array. It is used where you would otherwise write variable names separated by commas.
+function sum(...numbers) {
+  return numbers.reduce((acc, curr) => acc + curr, 0);
+}
+
+console.log(sum(1, 2, 3)); // Output: 6
+// The comment is emphasizing that the rest pattern is used in function parameters to collect remaining arguments into an array, while the spread operator is used in other contexts (like array literals) to expand arrays or iterables into individual elements. 
+
 ////////////////////// Logical Operators-- Short Circuiting (&&, ||) ////////////////////
 
 // logical operators can use any data type
@@ -334,6 +352,8 @@ restaurant.orderPizza("onions");
 // logical operators can do short circuiting/ short circuit evaluation
 
 // for the || operator if the first value is a truthy value it would return the first value without evaluating the second
+// OR-->FIRST TRUTH
+// ORFT --> FORT
 console.log("---OR----");
 console.log(3 || "james");
 console.log("" || "james");
@@ -351,6 +371,8 @@ console.log(guests2); // this is a better option because its easier than if-else
 
 console.log("---AND----");
 // for the && operator if the first value is a falsy value it would return the first value without evaluating the second
+// FFAND
+
 console.log(0 && "jonas");
 console.log(7 && "jonas");
 console.log("hello" && 23 && null && "jonas");
@@ -400,17 +422,18 @@ console.log(rest2);
 // LOGICAL OR ASSIGNMENT OPERATOR
 console.log("--- LOGICAL OR ASSIGNMENT OPERATOR---");
 
-rest1.numGuest = rest1.numGuest ||= 10;
-rest2.numGuest = rest2.numGuest ||= 10;
+ rest1.numGuest ||= 10;
+rest2.numGuest ||= 10;
 console.log(rest1);
 console.log(rest2);
 
 // LOGICAL NULLISH ASSIGNMENT OPERATOR
 console.log("---LOGICAL NULLISH ASSIGNMENT OPERATOR---");
-rest1.numGuest = rest1.numGuest ??= 10;
-rest2.numGuest = rest2.numGuest ??= 10;
+ rest1.numGuest ??= 10;
+rest2.numGuest ??= 10;
 console.log(rest1);
 console.log(rest2);
+// This line of code assigns 10 to rest1.numGuest if rest1.numGuest is null or undefined. If rest1.numGuest is any other falsy value (such as 0, '', or false), the assignment does not occur, and rest1.numGuest retains its current value.
 
 //  AND ASSIGNMENT OPERATOR
 console.log("--- AND ASSIGNMENT OPERATOR---");
